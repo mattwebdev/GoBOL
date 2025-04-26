@@ -59,53 +59,88 @@ func (l *Lexer) NextToken() token.TokenInfo {
 			return l.readComment()
 		}
 		tok = l.newToken(token.ASTERISK, string(l.ch))
+		l.readChar()
 	case '.':
 		tok = l.newToken(token.DOT, string(l.ch))
+		l.readChar()
+		return tok
 	case ',':
 		tok = l.newToken(token.COMMA, string(l.ch))
+		l.readChar()
 	case ';':
 		tok = l.newToken(token.SEMICOLON, string(l.ch))
+		l.readChar()
 	case '(':
 		tok = l.newToken(token.LPAREN, string(l.ch))
+		l.readChar()
 	case ')':
 		tok = l.newToken(token.RPAREN, string(l.ch))
+		l.readChar()
 	case '{':
 		tok = l.newToken(token.LBRACE, string(l.ch))
+		l.readChar()
 	case '}':
 		tok = l.newToken(token.RBRACE, string(l.ch))
+		l.readChar()
 	case '+':
 		tok = l.newToken(token.PLUS, string(l.ch))
+		l.readChar()
 	case '-':
 		// Handle COBOL words with hyphens
 		if isLetter(l.peekChar()) {
-			tok = l.readCompoundIdentifier()
-			return tok
-		} else {
-			tok = l.newToken(token.MINUS, string(l.ch))
+			return l.readCompoundIdentifier()
 		}
+		tok = l.newToken(token.MINUS, string(l.ch))
+		l.readChar()
 	case '/':
 		tok = l.newToken(token.SLASH, string(l.ch))
+		l.readChar()
 	case '=':
 		tok = l.newToken(token.EQUAL, string(l.ch))
+		l.readChar()
 	case '"', '\'':
-		tok = l.readString(l.ch)
+		return l.readString(l.ch)
 	case '$':
 		tok = l.newToken(token.CURRENCY, string(l.ch))
+		l.readChar()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+		return tok
 	default:
 		if isLetter(l.ch) {
-			tok = l.readCompoundIdentifier()
-			return tok
+			// First try to read a word
+			savedPos := l.position
+			savedReadPos := l.readPosition
+			savedCh := l.ch
+			savedColumn := l.column
+
+			word := l.readWord()
+			if word == "PIC" {
+				// Return PIC token and prepare to read the picture clause
+				tok := token.TokenInfo{
+					Type:    token.PIC,
+					Literal: word,
+					Pos:     l.currentPosition(),
+				}
+				l.skipWhitespace()
+				return tok
+			}
+
+			// Restore position and try compound identifier
+			l.position = savedPos
+			l.readPosition = savedReadPos
+			l.ch = savedCh
+			l.column = savedColumn
+			return l.readCompoundIdentifier()
 		} else if isDigit(l.ch) {
 			return l.readNumber()
 		} else {
 			tok = l.newToken(token.ILLEGAL, string(l.ch))
+			l.readChar()
 		}
 	}
 
-	l.readChar()
 	return tok
 }
 
@@ -114,37 +149,77 @@ func (l *Lexer) readCompoundIdentifier() token.TokenInfo {
 	pos := l.currentPosition()
 	word := l.readWord()
 
-	// Check for compound tokens (e.g., "GREATER THAN", "LENGTH OF")
-	if isCompoundTokenStart(word) {
-		l.skipWhitespace()
-		if isLetter(l.ch) {
-			nextWord := l.readWord()
-			compound := word + " " + nextWord
+	// First check if the single word is a token
+	if typ := token.Lookup(word); typ != token.ILLEGAL {
+		return token.TokenInfo{
+			Type:    typ,
+			Literal: word,
+			Pos:     pos,
+		}
+	}
 
-			// Handle three-word compounds (e.g., "GREATER THAN OR")
-			if isThreeWordCompoundStart(compound) {
-				l.skipWhitespace()
-				if isLetter(l.ch) {
-					thirdWord := l.readWord()
-					compound = compound + " " + thirdWord
-				}
-			}
+	// Save position before trying compound
+	savedPos := l.position
+	savedReadPos := l.readPosition
+	savedCh := l.ch
+	savedColumn := l.column
 
-			if typ, ok := lookupCompoundToken(compound); ok {
-				return token.TokenInfo{
-					Type:    typ,
-					Literal: compound,
-					Pos:     pos,
-				}
+	// Try to read a compound token
+	l.skipWhitespace()
+	if isLetter(l.ch) || l.ch == '-' {
+		nextWord := l.readWord()
+		compound := word + " " + nextWord
+
+		if typ := token.Lookup(compound); typ != token.ILLEGAL {
+			return token.TokenInfo{
+				Type:    typ,
+				Literal: compound,
+				Pos:     pos,
 			}
 		}
 	}
 
-	// Not a compound token, treat as regular identifier
-	typ := token.Lookup(word)
+	// Restore position and return single word as identifier
+	l.position = savedPos
+	l.readPosition = savedReadPos
+	l.ch = savedCh
+	l.column = savedColumn
+
+	// Special handling for PIC clause
+	if word == "PIC" {
+		return token.TokenInfo{
+			Type:    token.PIC,
+			Literal: word,
+			Pos:     pos,
+		}
+	}
+
 	return token.TokenInfo{
-		Type:    typ,
+		Type:    token.IDENT,
 		Literal: word,
+		Pos:     pos,
+	}
+}
+
+// readPictureClause reads a COBOL picture clause
+func (l *Lexer) readPictureClause() token.TokenInfo {
+	pos := l.currentPosition()
+	position := l.position
+
+	// Skip any leading whitespace
+	l.skipWhitespace()
+
+	// Read until we hit a space, period, or end of input
+	for {
+		if l.ch == ' ' || l.ch == '.' || l.ch == '\n' || l.ch == '\r' || l.ch == 0 {
+			break
+		}
+		l.readChar()
+	}
+
+	return token.TokenInfo{
+		Type:    token.IDENT,
+		Literal: l.input[position:l.position],
 		Pos:     pos,
 	}
 }
@@ -155,54 +230,7 @@ func (l *Lexer) readWord() string {
 	for isLetter(l.ch) || isDigit(l.ch) || l.ch == '-' {
 		l.readChar()
 	}
-	return l.input[position:l.position]
-}
-
-// isCompoundTokenStart checks if a word could be the start of a compound token
-func isCompoundTokenStart(word string) bool {
-	switch strings.ToUpper(word) {
-	case "GREATER", "LESS", "EQUAL", "LENGTH", "ADDRESS", "HIGH", "LOW":
-		return true
-	}
-	return false
-}
-
-// isThreeWordCompoundStart checks if a two-word compound could start a three-word compound
-func isThreeWordCompoundStart(compound string) bool {
-	switch strings.ToUpper(compound) {
-	case "GREATER THAN", "LESS THAN":
-		return true
-	}
-	return false
-}
-
-// lookupCompoundToken checks if a multi-word string is a valid compound token
-func lookupCompoundToken(compound string) (token.Token, bool) {
-	switch strings.ToUpper(compound) {
-	case "GREATER THAN":
-		return token.GREATER_THAN, true
-	case "LESS THAN":
-		return token.LESS_THAN, true
-	case "EQUAL TO":
-		return token.EQUAL_TO, true
-	case "GREATER THAN OR":
-		return token.GREATER, true
-	case "LESS THAN OR":
-		return token.LESS, true
-	case "LENGTH OF":
-		return token.LENGTH_OF, true
-	case "ADDRESS OF":
-		return token.ADDRESS_OF, true
-	case "HIGH VALUE":
-		return token.HIGH_VALUE, true
-	case "HIGH VALUES":
-		return token.HIGH_VALUES, true
-	case "LOW VALUE":
-		return token.LOW_VALUE, true
-	case "LOW VALUES":
-		return token.LOW_VALUES, true
-	}
-	return token.ILLEGAL, false
+	return strings.ToUpper(l.input[position:l.position])
 }
 
 // handleFixedFormLine handles the special rules for fixed-form COBOL
@@ -260,6 +288,7 @@ func (l *Lexer) readDebugLine() token.TokenInfo {
 // readString reads a string literal
 func (l *Lexer) readString(quote byte) token.TokenInfo {
 	pos := l.currentPosition()
+	position := l.position
 	l.readChar() // Skip opening quote
 	for l.ch != quote && l.ch != 0 {
 		l.readChar()
@@ -269,7 +298,7 @@ func (l *Lexer) readString(quote byte) token.TokenInfo {
 	}
 	return token.TokenInfo{
 		Type:    token.STRING_LIT,
-		Literal: l.input[pos.Offset:l.position],
+		Literal: l.input[position+1 : l.position-1], // Remove quotes
 		Pos:     pos,
 	}
 }
@@ -277,6 +306,7 @@ func (l *Lexer) readString(quote byte) token.TokenInfo {
 // readNumber reads a numeric literal
 func (l *Lexer) readNumber() token.TokenInfo {
 	pos := l.currentPosition()
+	position := l.position
 	for isDigit(l.ch) {
 		l.readChar()
 	}
@@ -288,7 +318,7 @@ func (l *Lexer) readNumber() token.TokenInfo {
 	}
 
 	// Check if this could be a level number
-	literal := l.input[pos.Offset:l.position]
+	literal := l.input[position:l.position]
 	if token.IsLevelNumber(literal) {
 		return token.TokenInfo{
 			Type:    token.LEVEL_NUMBER,
