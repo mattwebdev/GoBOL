@@ -38,6 +38,8 @@ const (
 	SOURCE_COMPUTER
 	OBJECT_COMPUTER
 	WORKING_STORAGE
+	LOCAL_STORAGE
+	LINKAGE
 	FILE
 	SECTION
 	PIC
@@ -159,6 +161,14 @@ const (
 
 	// Statement end tokens
 	END_PERFORM
+
+	// Exception handling tokens
+	TRY
+	CATCH
+	END_TRY
+	FINALLY
+	RAISE
+	SIZE_ERROR
 )
 
 var tokens = [...]string{
@@ -181,6 +191,8 @@ var tokens = [...]string{
 	SOURCE_COMPUTER: "SOURCE-COMPUTER",
 	OBJECT_COMPUTER: "OBJECT-COMPUTER",
 	WORKING_STORAGE: "WORKING-STORAGE",
+	LOCAL_STORAGE:   "LOCAL-STORAGE",
+	LINKAGE:         "LINKAGE",
 	FILE:            "FILE",
 	SECTION:         "SECTION",
 	PIC:             "PIC",
@@ -301,6 +313,14 @@ var tokens = [...]string{
 
 	// Statement end tokens
 	END_PERFORM: "END-PERFORM",
+
+	// Exception handling tokens
+	TRY:        "TRY",
+	CATCH:      "CATCH",
+	END_TRY:    "END-TRY",
+	FINALLY:    "FINALLY",
+	RAISE:      "RAISE",
+	SIZE_ERROR: "SIZE ERROR",
 }
 
 // String returns the string representation of the token
@@ -325,6 +345,8 @@ var keywords = map[string]Token{
 	"SOURCE-COMPUTER": SOURCE_COMPUTER,
 	"OBJECT-COMPUTER": OBJECT_COMPUTER,
 	"WORKING-STORAGE": WORKING_STORAGE,
+	"LOCAL-STORAGE":   LOCAL_STORAGE,
+	"LINKAGE":         LINKAGE,
 	"FILE":            FILE,
 	"SECTION":         SECTION,
 	"PIC":             PIC,
@@ -398,6 +420,13 @@ var keywords = map[string]Token{
 	"THAN":            THAN,
 	"TRUE":            TRUE,
 	"FALSE":           FALSE,
+	"END-PERFORM":     END_PERFORM,
+	"TRY":             TRY,
+	"CATCH":           CATCH,
+	"END-TRY":         END_TRY,
+	"FINALLY":         FINALLY,
+	"RAISE":           RAISE,
+	"SIZE":            SIZE_ERROR,
 }
 
 // IsLevelNumber checks if a string represents a valid COBOL level number

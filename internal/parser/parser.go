@@ -133,14 +133,26 @@ func (p *Parser) parseDataDivision() *ast.DataDivision {
 		Token: p.currentToken,
 	}
 
-	// Parse FILE SECTION
-	if p.currentToken.Type == token.FILE && p.peekTokenIs(token.SECTION) {
-		division.FileSection = p.parseFileSection()
-	}
+	// Parse sections until we hit another division or EOF
+	for p.currentToken.Type != token.EOF &&
+		p.currentToken.Type != token.PROCEDURE_DIVISION {
 
-	// Parse WORKING-STORAGE SECTION
-	if p.currentToken.Type == token.WORKING_STORAGE && p.peekTokenIs(token.SECTION) {
-		division.WorkingStorage = p.parseWorkingStorageSection()
+		switch {
+		case p.currentToken.Type == token.FILE && p.peekTokenIs(token.SECTION):
+			division.FileSection = p.parseFileSection()
+
+		case p.currentToken.Type == token.WORKING_STORAGE && p.peekTokenIs(token.SECTION):
+			division.WorkingStorage = p.parseWorkingStorageSection()
+
+		case p.currentToken.Type == token.LOCAL_STORAGE && p.peekTokenIs(token.SECTION):
+			division.LocalStorage = p.parseLocalStorageSection()
+
+		case p.currentToken.Type == token.LINKAGE && p.peekTokenIs(token.SECTION):
+			division.LinkageSection = p.parseLinkageSection()
+
+		default:
+			p.nextToken()
+		}
 	}
 
 	return division
@@ -652,4 +664,65 @@ func (p *Parser) parsePictureClause() *ast.PictureClause {
 	pic.EditMask = editMask
 
 	return pic
+}
+
+// parseLocalStorageSection parses the LOCAL-STORAGE SECTION
+func (p *Parser) parseLocalStorageSection() *ast.LocalStorageSection {
+	section := &ast.LocalStorageSection{
+		Token: p.currentToken,
+	}
+
+	p.nextToken() // Move past LOCAL-STORAGE
+	p.expectToken(token.SECTION)
+	p.expectToken(token.DOT)
+
+	// Parse data records until we hit another section or division
+	for p.currentToken.Type != token.EOF &&
+		!p.isStartOfSection() &&
+		!p.isStartOfDivision() {
+
+		if record := p.parseDataRecord(); record != nil {
+			section.Records = append(section.Records, record)
+		}
+	}
+
+	return section
+}
+
+// isStartOfSection returns true if current tokens indicate start of a new section
+func (p *Parser) isStartOfSection() bool {
+	return (p.currentToken.Type == token.FILE && p.peekTokenIs(token.SECTION)) ||
+		(p.currentToken.Type == token.WORKING_STORAGE && p.peekTokenIs(token.SECTION)) ||
+		(p.currentToken.Type == token.LOCAL_STORAGE && p.peekTokenIs(token.SECTION)) ||
+		(p.currentToken.Type == token.LINKAGE && p.peekTokenIs(token.SECTION))
+}
+
+// isStartOfDivision returns true if current token indicates start of a new division
+func (p *Parser) isStartOfDivision() bool {
+	return p.currentToken.Type == token.PROCEDURE_DIVISION ||
+		p.currentToken.Type == token.ENVIRONMENT_DIVISION ||
+		p.currentToken.Type == token.IDENTIFICATION_DIVISION
+}
+
+// parseLinkageSection parses the LINKAGE SECTION
+func (p *Parser) parseLinkageSection() *ast.LinkageSection {
+	section := &ast.LinkageSection{
+		Token: p.currentToken,
+	}
+
+	p.nextToken() // Move past LINKAGE
+	p.expectToken(token.SECTION)
+	p.expectToken(token.DOT)
+
+	// Parse data records until we hit another section or division
+	for p.currentToken.Type != token.EOF &&
+		!p.isStartOfSection() &&
+		!p.isStartOfDivision() {
+
+		if record := p.parseDataRecord(); record != nil {
+			section.Records = append(section.Records, record)
+		}
+	}
+
+	return section
 }

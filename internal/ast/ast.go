@@ -1,6 +1,8 @@
 package ast
 
 import (
+	"fmt"
+
 	"github.com/mattwebdev/gobol/pkg/token"
 )
 
@@ -104,6 +106,7 @@ type DataDivision struct {
 	Token                token.TokenInfo
 	FileSection          *FileSection
 	WorkingStorage       *WorkingStorageSection
+	LocalStorage         *LocalStorageSection
 	LinkageSection       *LinkageSection
 	CommunicationSection *CommunicationSection
 }
@@ -118,6 +121,33 @@ func (dd *DataDivision) String() string {
 type WorkingStorageSection struct {
 	Token   token.TokenInfo
 	Records []*DataRecord
+}
+
+// LocalStorageSection represents the LOCAL-STORAGE SECTION
+type LocalStorageSection struct {
+	Token   token.TokenInfo
+	Records []*DataRecord
+}
+
+func (ls *LocalStorageSection) statementNode()       {}
+func (ls *LocalStorageSection) TokenLiteral() string { return ls.Token.Literal }
+func (ls *LocalStorageSection) String() string {
+	var out string
+	out += "LOCAL-STORAGE SECTION.\n"
+	for _, record := range ls.Records {
+		out += "    " + record.LevelNumber + " " + record.Name
+		if record.Picture != nil {
+			out += " PIC " + record.Picture.Type
+			if record.Picture.Length > 0 {
+				out += "(" + fmt.Sprintf("%d", record.Picture.Length) + ")"
+			}
+		}
+		if record.Value != nil {
+			out += " VALUE " + record.Value.String()
+		}
+		out += ".\n"
+	}
+	return out
 }
 
 // DataRecord represents a data record (level number + description)

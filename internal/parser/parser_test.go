@@ -209,3 +209,80 @@ func TestParseErrors(t *testing.T) {
 		}
 	}
 }
+
+func TestLocalStorageSection(t *testing.T) {
+	input := `       DATA DIVISION.
+       LOCAL-STORAGE SECTION.
+       01  LS-COUNTER    PIC 9(5).
+       01  LS-NAME       PIC X(20).
+       01  LS-TEMP-DATA.
+           05  LS-TEMP-NUM   PIC 9(10).
+           05  LS-TEMP-STR   PIC X(50).
+       01  LS-FLAG       PIC 9 VALUE 0.`
+
+	l := lexer.New(input, false)
+	p := New(l)
+	program := p.ParseProgram()
+
+	if len(p.Errors()) > 0 {
+		t.Errorf("parser had %d errors", len(p.Errors()))
+		for _, msg := range p.Errors() {
+			t.Errorf("parser error: %q", msg)
+		}
+		t.FailNow()
+	}
+
+	if program.DataDivision == nil {
+		t.Fatal("DataDivision is nil")
+	}
+
+	localStorage := program.DataDivision.LocalStorage
+	if localStorage == nil {
+		t.Fatal("LocalStorageSection is nil")
+	}
+
+	tests := []struct {
+		levelNum string
+		name     string
+		picType  string
+		length   int
+	}{
+		{"01", "LS-COUNTER", "9", 5},
+		{"01", "LS-NAME", "X", 20},
+		{"01", "LS-TEMP-DATA", "", 0},
+		{"05", "LS-TEMP-NUM", "9", 10},
+		{"05", "LS-TEMP-STR", "X", 50},
+		{"01", "LS-FLAG", "9", 1},
+	}
+
+	if len(localStorage.Records) != len(tests) {
+		t.Fatalf("wrong number of records. expected=%d, got=%d",
+			len(tests), len(localStorage.Records))
+	}
+
+	for i, tt := range tests {
+		record := localStorage.Records[i]
+		if record.LevelNumber != tt.levelNum {
+			t.Errorf("wrong level number. expected=%s, got=%s",
+				tt.levelNum, record.LevelNumber)
+		}
+		if record.Name != tt.name {
+			t.Errorf("wrong name. expected=%s, got=%s",
+				tt.name, record.Name)
+		}
+		if tt.picType != "" {
+			if record.Picture == nil {
+				t.Errorf("Picture is nil for record %s", tt.name)
+				continue
+			}
+			if record.Picture.Type != tt.picType {
+				t.Errorf("wrong picture type. expected=%s, got=%s",
+					tt.picType, record.Picture.Type)
+			}
+			if record.Picture.Length != tt.length {
+				t.Errorf("wrong picture length. expected=%d, got=%d",
+					tt.length, record.Picture.Length)
+			}
+		}
+	}
+}
