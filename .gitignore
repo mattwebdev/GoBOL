@@ -1,0 +1,63 @@
+# Go specific
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+# Go workspace file
+go.work
+
+# Output directories
+bin/
+dist/
+
+# COBOL specific
+*.gnt
+*.so
+*.dll
+*.exe
+*.int
+*.idy
+*.lst
+*.cob~
+*.cbl~
+
+# Dependency directories
+vendor/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Debug files
+debug/
+
+# Test binary, built with 'go test -c'
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Log files
+*.log 
