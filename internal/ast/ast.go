@@ -482,3 +482,71 @@ func (vp *VaryingPhrase) String() string {
 		" BY " + vp.By.String() +
 		" UNTIL " + vp.Until.String()
 }
+
+// TryStatement represents a TRY-CATCH-FINALLY block
+type TryStatement struct {
+	Token        token.TokenInfo
+	TryBlock     []Statement
+	CatchBlocks  []*CatchBlock
+	FinallyBlock []Statement
+}
+
+func (ts *TryStatement) statementNode()       {}
+func (ts *TryStatement) TokenLiteral() string { return ts.Token.Literal }
+func (ts *TryStatement) String() string {
+	var out string
+	out += "TRY\n"
+	for _, stmt := range ts.TryBlock {
+		out += "    " + stmt.String() + "\n"
+	}
+	for _, catch := range ts.CatchBlocks {
+		out += catch.String()
+	}
+	if len(ts.FinallyBlock) > 0 {
+		out += "FINALLY\n"
+		for _, stmt := range ts.FinallyBlock {
+			out += "    " + stmt.String() + "\n"
+		}
+	}
+	out += "END-TRY."
+	return out
+}
+
+// CatchBlock represents a CATCH block in a TRY statement
+type CatchBlock struct {
+	Token      token.TokenInfo
+	ExceptType token.Token // Type of exception to catch (e.g., SIZE_ERROR)
+	Name       string      // Optional name to bind the exception
+	Body       []Statement
+}
+
+func (cb *CatchBlock) String() string {
+	var out string
+	out += "CATCH "
+	if cb.ExceptType != token.ILLEGAL {
+		out += cb.ExceptType.String()
+	}
+	if cb.Name != "" {
+		out += " AS " + cb.Name
+	}
+	out += "\n"
+	for _, stmt := range cb.Body {
+		out += "    " + stmt.String() + "\n"
+	}
+	return out
+}
+
+// RaiseStatement represents a RAISE statement
+type RaiseStatement struct {
+	Token token.TokenInfo
+	Value Expression // Optional expression to raise
+}
+
+func (rs *RaiseStatement) statementNode()       {}
+func (rs *RaiseStatement) TokenLiteral() string { return rs.Token.Literal }
+func (rs *RaiseStatement) String() string {
+	if rs.Value != nil {
+		return "RAISE " + rs.Value.String() + "."
+	}
+	return "RAISE."
+}

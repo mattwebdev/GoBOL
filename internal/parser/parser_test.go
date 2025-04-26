@@ -6,6 +6,7 @@ import (
 
 	"github.com/mattwebdev/gobol/internal/ast"
 	"github.com/mattwebdev/gobol/internal/lexer"
+	"github.com/mattwebdev/gobol/pkg/token"
 )
 
 func TestIdentificationDivision(t *testing.T) {
@@ -284,5 +285,147 @@ func TestLocalStorageSection(t *testing.T) {
 					tt.length, record.Picture.Length)
 			}
 		}
+	}
+}
+
+func TestTryCatchFinally(t *testing.T) {
+	input := `       PROCEDURE DIVISION.
+           TRY
+               COMPUTE RESULT = VALUE-1 / VALUE-2
+           CATCH SIZE ERROR
+               DISPLAY "Division by zero"
+               MOVE 0 TO RESULT
+           CATCH AS ERR-OBJ
+               DISPLAY "Unknown error"
+               RAISE ERR-OBJ
+           FINALLY
+               DISPLAY "Cleanup"
+               MOVE SPACES TO TEMP-FIELD
+           END-TRY.`
+
+	l := lexer.New(input, false)
+	p := New(l)
+	program := p.ParseProgram()
+
+	if len(p.Errors()) > 0 {
+		t.Errorf("parser had %d errors", len(p.Errors()))
+		for _, msg := range p.Errors() {
+			t.Errorf("parser error: %q", msg)
+		}
+		t.FailNow()
+	}
+
+	if program.ProcedureDivision == nil {
+		t.Fatal("ProcedureDivision is nil")
+	}
+
+	if len(program.ProcedureDivision.Statements) != 1 {
+		t.Fatalf("wrong number of statements. expected=1, got=%d",
+			len(program.ProcedureDivision.Statements))
+	}
+
+	tryStmt, ok := program.ProcedureDivision.Statements[0].(*ast.TryStatement)
+	if !ok {
+		t.Fatalf("statement not *ast.TryStatement. got=%T",
+			program.ProcedureDivision.Statements[0])
+	}
+
+	// Test TRY block
+	if len(tryStmt.TryBlock) != 1 {
+		t.Errorf("wrong number of statements in try block. expected=1, got=%d",
+			len(tryStmt.TryBlock))
+	}
+
+	computeStmt, ok := tryStmt.TryBlock[0].(*ast.ComputeStatement)
+	if !ok {
+		t.Errorf("try block statement not *ast.ComputeStatement. got=%T",
+			tryStmt.TryBlock[0])
+	}
+	if computeStmt == nil {
+		t.Fatal("ComputeStatement is nil")
+	}
+
+	// Test CATCH blocks
+	if len(tryStmt.CatchBlocks) != 2 {
+		t.Fatalf("wrong number of catch blocks. expected=2, got=%d",
+			len(tryStmt.CatchBlocks))
+	}
+
+	// Test first CATCH block (SIZE ERROR)
+	if tryStmt.CatchBlocks[0].ExceptType != token.SIZE_ERROR {
+		t.Errorf("wrong exception type. expected=SIZE_ERROR, got=%s",
+			tryStmt.CatchBlocks[0].ExceptType)
+	}
+	if len(tryStmt.CatchBlocks[0].Body) != 2 {
+		t.Errorf("wrong number of statements in first catch block. expected=2, got=%d",
+			len(tryStmt.CatchBlocks[0].Body))
+	}
+
+	// Test second CATCH block (with AS clause)
+	if tryStmt.CatchBlocks[1].Name != "ERR-OBJ" {
+		t.Errorf("wrong exception name. expected=ERR-OBJ, got=%s",
+			tryStmt.CatchBlocks[1].Name)
+	}
+	if len(tryStmt.CatchBlocks[1].Body) != 2 {
+		t.Errorf("wrong number of statements in second catch block. expected=2, got=%d",
+			len(tryStmt.CatchBlocks[1].Body))
+	}
+
+	// Test FINALLY block
+	if len(tryStmt.FinallyBlock) != 2 {
+		t.Errorf("wrong number of statements in finally block. expected=2, got=%d",
+			len(tryStmt.FinallyBlock))
+	}
+}
+
+func TestRaiseStatement(t *testing.T) {
+	input := `       PROCEDURE DIVISION.
+           RAISE.
+           RAISE MY-EXCEPTION.`
+
+	l := lexer.New(input, false)
+	p := New(l)
+	program := p.ParseProgram()
+
+	if len(p.Errors()) > 0 {
+		t.Errorf("parser had %d errors", len(p.Errors()))
+		for _, msg := range p.Errors() {
+			t.Errorf("parser error: %q", msg)
+		}
+		t.FailNow()
+	}
+
+	statements := program.ProcedureDivision.Statements
+	if len(statements) != 2 {
+		t.Fatalf("wrong number of statements. expected=2, got=%d",
+			len(statements))
+	}
+
+	// Test simple RAISE
+	raise1, ok := statements[0].(*ast.RaiseStatement)
+	if !ok {
+		t.Fatalf("statement not *ast.RaiseStatement. got=%T",
+			statements[0])
+	}
+	if raise1.Value != nil {
+		t.Errorf("raise value not nil. got=%+v", raise1.Value)
+	}
+
+	// Test RAISE with expression
+	raise2, ok := statements[1].(*ast.RaiseStatement)
+	if !ok {
+		t.Fatalf("statement not *ast.RaiseStatement. got=%T",
+			statements[1])
+	}
+	if raise2.Value == nil {
+		t.Fatal("raise value is nil")
+	}
+	ident, ok := raise2.Value.(*ast.Identifier)
+	if !ok {
+		t.Fatalf("raise value not *ast.Identifier. got=%T", raise2.Value)
+	}
+	if ident.Value != "MY-EXCEPTION" {
+		t.Errorf("wrong identifier value. expected=MY-EXCEPTION, got=%s",
+			ident.Value)
 	}
 }

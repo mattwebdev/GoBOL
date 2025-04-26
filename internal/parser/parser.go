@@ -192,6 +192,10 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parsePerformStatement()
 	case token.DISPLAY:
 		return p.parseDisplayStatement()
+	case token.TRY:
+		return p.parseTryStatement()
+	case token.RAISE:
+		return p.parseRaiseStatement()
 	default:
 		p.nextToken()
 		return nil
@@ -725,4 +729,116 @@ func (p *Parser) parseLinkageSection() *ast.LinkageSection {
 	}
 
 	return section
+}
+
+// parseTryStatement parses a TRY-CATCH-FINALLY block
+func (p *Parser) parseTryStatement() *ast.TryStatement {
+	stmt := &ast.TryStatement{
+		Token: p.currentToken,
+	}
+
+	// Parse TRY block
+	p.nextToken() // Move past TRY
+
+	// Parse statements in TRY block until CATCH, FINALLY, or END-TRY
+	for p.currentToken.Type != token.EOF &&
+		p.currentToken.Type != token.CATCH &&
+		p.currentToken.Type != token.FINALLY &&
+		p.currentToken.Type != token.END_TRY {
+		if s := p.parseStatement(); s != nil {
+			stmt.TryBlock = append(stmt.TryBlock, s)
+		}
+	}
+
+	// Parse CATCH blocks
+	for p.currentToken.Type == token.CATCH {
+		catchBlock := p.parseCatchBlock()
+		if catchBlock != nil {
+			stmt.CatchBlocks = append(stmt.CatchBlocks, catchBlock)
+		}
+	}
+
+	// Parse optional FINALLY block
+	if p.currentToken.Type == token.FINALLY {
+		p.nextToken() // Move past FINALLY
+
+		for p.currentToken.Type != token.EOF &&
+			p.currentToken.Type != token.END_TRY {
+			if s := p.parseStatement(); s != nil {
+				stmt.FinallyBlock = append(stmt.FinallyBlock, s)
+			}
+		}
+	}
+
+	// Expect END-TRY
+	if !p.expectToken(token.END_TRY) {
+		return nil
+	}
+
+	p.expectToken(token.DOT)
+	return stmt
+}
+
+// parseCatchBlock parses a single CATCH block
+func (p *Parser) parseCatchBlock() *ast.CatchBlock {
+	block := &ast.CatchBlock{
+		Token: p.currentToken,
+	}
+
+	p.nextToken() // Move past CATCH
+
+	// Parse optional exception type
+	if p.isExceptionType(p.currentToken.Type) {
+		block.ExceptType = p.currentToken.Type
+		p.nextToken()
+
+		// Parse optional AS clause
+		if p.currentToken.Literal == "AS" {
+			p.nextToken()
+			if p.currentToken.Type == token.IDENT {
+				block.Name = p.currentToken.Literal
+				p.nextToken()
+			}
+		}
+	}
+
+	// Parse CATCH block statements
+	for p.currentToken.Type != token.EOF &&
+		p.currentToken.Type != token.CATCH &&
+		p.currentToken.Type != token.FINALLY &&
+		p.currentToken.Type != token.END_TRY {
+		if s := p.parseStatement(); s != nil {
+			block.Body = append(block.Body, s)
+		}
+	}
+
+	return block
+}
+
+// parseRaiseStatement parses a RAISE statement
+func (p *Parser) parseRaiseStatement() *ast.RaiseStatement {
+	stmt := &ast.RaiseStatement{
+		Token: p.currentToken,
+	}
+
+	p.nextToken() // Move past RAISE
+
+	// Parse optional expression to raise
+	if p.currentToken.Type != token.DOT {
+		stmt.Value = p.parseExpression()
+	}
+
+	p.expectToken(token.DOT)
+	return stmt
+}
+
+// isExceptionType returns true if the token represents a valid exception type
+func (p *Parser) isExceptionType(t token.Token) bool {
+	switch t {
+	case token.SIZE_ERROR:
+		return true
+	// Add other exception types here as needed
+	default:
+		return false
+	}
 }
