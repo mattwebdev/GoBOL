@@ -172,6 +172,25 @@ const (
 	NATIONAL    // For national character usage
 	INVALID_KEY // For file handling conditions
 	AT_END      // For file handling conditions
+
+	// Report Writer keywords
+	INITIATE       // Start report processing
+	TERMINATE      // End report processing
+	TYPE           // Report group type
+	GROUP          // Report group
+	LINE_COUNTER   // Special register for line counting
+	PAGE_COUNTER   // Special register for page counting
+	NEXT_GROUP     // Controls spacing between groups
+	NEXT_PAGE      // Force new page
+	DE             // Detail group
+	RH             // Report heading
+	PH             // Page heading
+	RF             // Report footing
+	PF             // Page footing
+	CH             // Control heading
+	CF             // Control footing
+	SOURCE         // Source for report item
+	GROUP_INDICATE // Print only on first detail
 )
 
 // KeywordInfo contains information about a keyword
@@ -465,13 +484,13 @@ var keywordInfo = map[Token]KeywordInfo{
 		Token:    RANDOM,
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{ACCESS},
-		Category: "access_mode",
+		Category: "file_access",
 	},
 	DYNAMIC: {
 		Token:    DYNAMIC,
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{ACCESS},
-		Category: "access_mode",
+		Category: "file_access",
 	},
 	FILE: {
 		Token:    FILE,
@@ -487,19 +506,19 @@ var keywordInfo = map[Token]KeywordInfo{
 	RECORD: {
 		Token:    RECORD,
 		Class:    CLASS_KEYWORD,
-		Category: "record",
+		Category: "file_description",
 	},
 	KEY: {
 		Token:    KEY,
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{RECORD},
-		Category: "record_description",
+		Category: "file_description",
 	},
 	ALTERNATE: {
 		Token:    ALTERNATE,
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{KEY},
-		Category: "record_description",
+		Category: "file_description",
 	},
 	LABEL: {
 		Token:    LABEL,
@@ -850,6 +869,95 @@ var keywordInfo = map[Token]KeywordInfo{
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{READ},
 		Category: "condition",
+	},
+
+	// Report Writer keyword info
+	INITIATE: {
+		Token:    INITIATE,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+		Context:  []Token{REPORT},
+	},
+	TERMINATE: {
+		Token:    TERMINATE,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+		Context:  []Token{REPORT},
+	},
+	TYPE: {
+		Token:    TYPE,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	GROUP: {
+		Token:    GROUP,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	LINE_COUNTER: {
+		Token:    LINE_COUNTER,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	PAGE_COUNTER: {
+		Token:    PAGE_COUNTER,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	NEXT_GROUP: {
+		Token:    NEXT_GROUP,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	NEXT_PAGE: {
+		Token:    NEXT_PAGE,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	DE: {
+		Token:    DE,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	RH: {
+		Token:    RH,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	PH: {
+		Token:    PH,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	RF: {
+		Token:    RF,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	PF: {
+		Token:    PF,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	CH: {
+		Token:    CH,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	CF: {
+		Token:    CF,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	SOURCE: {
+		Token:    SOURCE,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
+	},
+	GROUP_INDICATE: {
+		Token:    GROUP_INDICATE,
+		Class:    CLASS_KEYWORD,
+		Category: "report",
 	},
 }
 

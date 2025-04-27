@@ -383,16 +383,6 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantOk: true,
 		},
 		{
-			name:  "RELATIVE info",
-			token: RELATIVE,
-			wantInfo: KeywordInfo{
-				Token:    RELATIVE,
-				Class:    CLASS_KEYWORD,
-				Category: "file_organization",
-			},
-			wantOk: true,
-		},
-		{
 			name:  "ACCESS info",
 			token: ACCESS,
 			wantInfo: KeywordInfo{
@@ -408,7 +398,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    RANDOM,
 				Class:    CLASS_KEYWORD,
-				Category: "access_mode",
+				Category: "file_access",
 			},
 			wantOk: true,
 		},
@@ -418,17 +408,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    DYNAMIC,
 				Class:    CLASS_KEYWORD,
-				Category: "access_mode",
-			},
-			wantOk: true,
-		},
-		{
-			name:  "FILE info",
-			token: FILE,
-			wantInfo: KeywordInfo{
-				Token:    FILE,
-				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_access",
 			},
 			wantOk: true,
 		},
@@ -448,7 +428,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    RECORD,
 				Class:    CLASS_KEYWORD,
-				Category: "record",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -458,7 +438,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    KEY,
 				Class:    CLASS_KEYWORD,
-				Category: "record_description",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -468,7 +448,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    ALTERNATE,
 				Class:    CLASS_KEYWORD,
-				Category: "record_description",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -920,6 +900,177 @@ func TestGetKeywordInfo(t *testing.T) {
 				Class:    CLASS_KEYWORD,
 				Context:  []Token{READ},
 				Category: "condition",
+			},
+			wantOk: true,
+		},
+		// Report Writer keyword tests
+		{
+			name:  "INITIATE info",
+			token: INITIATE,
+			wantInfo: KeywordInfo{
+				Token:    INITIATE,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "TERMINATE info",
+			token: TERMINATE,
+			wantInfo: KeywordInfo{
+				Token:    TERMINATE,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "TYPE info",
+			token: TYPE,
+			wantInfo: KeywordInfo{
+				Token:    TYPE,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "GROUP info",
+			token: GROUP,
+			wantInfo: KeywordInfo{
+				Token:    GROUP,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "LINE_COUNTER info",
+			token: LINE_COUNTER,
+			wantInfo: KeywordInfo{
+				Token:    LINE_COUNTER,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "PAGE_COUNTER info",
+			token: PAGE_COUNTER,
+			wantInfo: KeywordInfo{
+				Token:    PAGE_COUNTER,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "NEXT_GROUP info",
+			token: NEXT_GROUP,
+			wantInfo: KeywordInfo{
+				Token:    NEXT_GROUP,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "NEXT_PAGE info",
+			token: NEXT_PAGE,
+			wantInfo: KeywordInfo{
+				Token:    NEXT_PAGE,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "DE info",
+			token: DE,
+			wantInfo: KeywordInfo{
+				Token:    DE,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "RH info",
+			token: RH,
+			wantInfo: KeywordInfo{
+				Token:    RH,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "PH info",
+			token: PH,
+			wantInfo: KeywordInfo{
+				Token:    PH,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "RF info",
+			token: RF,
+			wantInfo: KeywordInfo{
+				Token:    RF,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "PF info",
+			token: PF,
+			wantInfo: KeywordInfo{
+				Token:    PF,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "CH info",
+			token: CH,
+			wantInfo: KeywordInfo{
+				Token:    CH,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "CF info",
+			token: CF,
+			wantInfo: KeywordInfo{
+				Token:    CF,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "SOURCE info",
+			token: SOURCE,
+			wantInfo: KeywordInfo{
+				Token:    SOURCE,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "GROUP_INDICATE info",
+			token: GROUP_INDICATE,
+			wantInfo: KeywordInfo{
+				Token:    GROUP_INDICATE,
+				Class:    CLASS_KEYWORD,
+				Category: "report",
 			},
 			wantOk: true,
 		},

@@ -209,6 +209,24 @@ var tokenStrings = map[Token]string{
 	SIZE:             "SIZE",
 	ERROR:            "ERROR",
 	OVERFLOW:         "OVERFLOW",
+	// Report Writer tokens
+	INITIATE:       "INITIATE",
+	TERMINATE:      "TERMINATE",
+	TYPE:           "TYPE",
+	GROUP:          "GROUP",
+	LINE_COUNTER:   "LINE-COUNTER",
+	PAGE_COUNTER:   "PAGE-COUNTER",
+	NEXT_GROUP:     "NEXT GROUP",
+	NEXT_PAGE:      "NEXT PAGE",
+	DE:             "DE",
+	RH:             "RH",
+	PH:             "PH",
+	RF:             "RF",
+	PF:             "PF",
+	CH:             "CH",
+	CF:             "CF",
+	SOURCE:         "SOURCE",
+	GROUP_INDICATE: "GROUP INDICATE",
 }
 
 // String returns the string representation of a token
