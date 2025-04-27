@@ -73,6 +73,7 @@ func TestKeywordTokenValues(t *testing.T) {
 		{EQUALS, "EQUALS"},
 		{CORRESPONDING, "CORRESPONDING"},
 		{CORR, "CORR"},
+		{BASED, "BASED"},
 	}
 
 	for _, tt := range tokens {
@@ -109,6 +110,7 @@ func TestIsKeyword(t *testing.T) {
 		{AFTER, true},
 		{BEFORE, true},
 		{STANDARD, true},
+		{BASED, true},
 		{ILLEGAL, false},
 		{EOF, false},
 		{IDENTIFIER, false},
@@ -189,6 +191,12 @@ func TestGetKeywordInfo(t *testing.T) {
 			expectedExists:   true,
 			expectedClass:    CLASS_KEYWORD,
 			expectedCategory: "qualifier",
+		},
+		{
+			token:            BASED,
+			expectedExists:   true,
+			expectedClass:    CLASS_KEYWORD,
+			expectedCategory: "memory",
 		},
 		{
 			token:          ILLEGAL,

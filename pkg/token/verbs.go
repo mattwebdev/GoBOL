@@ -34,6 +34,8 @@ const (
 	STOP
 	ALTER
 	USE
+	RAISE  // Exception handling
+	RESUME // Exception handling
 
 	// String manipulation verbs
 	STRING_VERB // Renamed to avoid conflict with STRING_LIT
@@ -45,6 +47,13 @@ const (
 	SET
 	SORT
 	MERGE
+
+	// Memory management verbs
+	ALLOCATE
+	FREE
+
+	// Data validation verbs
+	VALIDATE
 
 	// Report Writer verbs
 	GENERATE
@@ -216,6 +225,48 @@ var verbPatterns = map[Token]VerbInfo{
 		Class:       CLASS_VERB,
 		MinParams:   1,
 		MaxParams:   1,
+		Terminators: []Token{OP_PERIOD},
+	},
+	RAISE: {
+		Token:       RAISE,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   1,
+		Terminators: []Token{OP_PERIOD},
+	},
+	RESUME: {
+		Token:       RESUME,
+		Class:       CLASS_VERB,
+		MinParams:   0,
+		MaxParams:   1,
+		Terminators: []Token{OP_PERIOD},
+	},
+	ALLOCATE: {
+		Token:       ALLOCATE,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   -1,
+		Terminators: []Token{OP_PERIOD},
+		Patterns: []MultiWordPattern{
+			{
+				Parts:    []Token{ALLOCATE, BASED},
+				Result:   ALLOCATE,
+				Optional: []bool{false, true},
+			},
+		},
+	},
+	FREE: {
+		Token:       FREE,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   -1,
+		Terminators: []Token{OP_PERIOD},
+	},
+	VALIDATE: {
+		Token:       VALIDATE,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   -1,
 		Terminators: []Token{OP_PERIOD},
 	},
 	// Add more verb patterns as needed...

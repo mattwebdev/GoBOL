@@ -93,6 +93,7 @@ var tokenStrings = map[Token]string{
 	AFTER:         "AFTER",
 	BEFORE:        "BEFORE",
 	STANDARD:      "STANDARD",
+	BASED:         "BASED",
 	BINARY:        "BINARY",
 	COMPUTATIONAL: "COMPUTATIONAL",
 	COMP:          "COMP",

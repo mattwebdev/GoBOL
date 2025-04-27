@@ -20,6 +20,7 @@ const (
 	AFTER
 	BEFORE
 	STANDARD
+	BASED
 
 	// Division-related keywords
 	IDENTIFICATION
@@ -226,6 +227,12 @@ var keywordInfo = map[Token]KeywordInfo{
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{USE},
 		Category: "qualifier",
+	},
+	BASED: {
+		Token:    BASED,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{ALLOCATE},
+		Category: "memory",
 	},
 	// Add more keyword patterns as needed...
 }
