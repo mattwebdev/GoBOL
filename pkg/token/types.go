@@ -110,6 +110,22 @@ var tokenStrings = map[Token]string{
 	RENAMES:       "RENAMES",
 	REDEFINES:     "REDEFINES",
 	FILLER:        "FILLER",
+	END_IF:        "END-IF",
+	END_READ:      "END-READ",
+	END_WRITE:     "END-WRITE",
+	END_PERFORM:   "END-PERFORM",
+	END_EVALUATE:  "END-EVALUATE",
+	END_SEARCH:    "END-SEARCH",
+	END_COMPUTE:   "END-COMPUTE",
+	END_ADD:       "END-ADD",
+	END_SUBTRACT:  "END-SUBTRACT",
+	END_MULTIPLY:  "END-MULTIPLY",
+	END_DIVIDE:    "END-DIVIDE",
+	END_STRING:    "END-STRING",
+	END_UNSTRING:  "END-UNSTRING",
+	END_CALL:      "END-CALL",
+	END_ACCEPT:    "END-ACCEPT",
+	END_DISPLAY:   "END-DISPLAY",
 }
 
 // String returns the string representation of a token

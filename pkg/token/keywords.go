@@ -22,6 +22,24 @@ const (
 	STANDARD
 	BASED
 
+	// End-scope keywords
+	END_IF
+	END_READ
+	END_WRITE
+	END_PERFORM
+	END_EVALUATE
+	END_SEARCH
+	END_COMPUTE
+	END_ADD
+	END_SUBTRACT
+	END_MULTIPLY
+	END_DIVIDE
+	END_STRING
+	END_UNSTRING
+	END_CALL
+	END_ACCEPT
+	END_DISPLAY
+
 	// Division-related keywords
 	IDENTIFICATION
 	ENVIRONMENT
@@ -233,6 +251,102 @@ var keywordInfo = map[Token]KeywordInfo{
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{ALLOCATE},
 		Category: "memory",
+	},
+	END_IF: {
+		Token:    END_IF,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{IF},
+		Category: "scope_terminator",
+	},
+	END_READ: {
+		Token:    END_READ,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{READ},
+		Category: "scope_terminator",
+	},
+	END_WRITE: {
+		Token:    END_WRITE,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{WRITE},
+		Category: "scope_terminator",
+	},
+	END_PERFORM: {
+		Token:    END_PERFORM,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{PERFORM},
+		Category: "scope_terminator",
+	},
+	END_EVALUATE: {
+		Token:    END_EVALUATE,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{EVALUATE},
+		Category: "scope_terminator",
+	},
+	END_SEARCH: {
+		Token:    END_SEARCH,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{SEARCH},
+		Category: "scope_terminator",
+	},
+	END_COMPUTE: {
+		Token:    END_COMPUTE,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{COMPUTE},
+		Category: "scope_terminator",
+	},
+	END_ADD: {
+		Token:    END_ADD,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{ADD},
+		Category: "scope_terminator",
+	},
+	END_SUBTRACT: {
+		Token:    END_SUBTRACT,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{SUBTRACT},
+		Category: "scope_terminator",
+	},
+	END_MULTIPLY: {
+		Token:    END_MULTIPLY,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{MULTIPLY},
+		Category: "scope_terminator",
+	},
+	END_DIVIDE: {
+		Token:    END_DIVIDE,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{DIVIDE},
+		Category: "scope_terminator",
+	},
+	END_STRING: {
+		Token:    END_STRING,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{STRING_VERB},
+		Category: "scope_terminator",
+	},
+	END_UNSTRING: {
+		Token:    END_UNSTRING,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{UNSTRING},
+		Category: "scope_terminator",
+	},
+	END_CALL: {
+		Token:    END_CALL,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{CALL},
+		Category: "scope_terminator",
+	},
+	END_ACCEPT: {
+		Token:    END_ACCEPT,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{ACCEPT},
+		Category: "scope_terminator",
+	},
+	END_DISPLAY: {
+		Token:    END_DISPLAY,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{DISPLAY},
+		Category: "scope_terminator",
 	},
 	// Add more keyword patterns as needed...
 }
