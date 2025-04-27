@@ -164,6 +164,14 @@ const (
 	ERROR
 	OVERFLOW
 	UNDERFLOW
+
+	// Additional missing ISO keywords
+	REMAINDER   // For DIVIDE operation
+	POINTER     // For pointer usage
+	INDEX       // For index usage
+	NATIONAL    // For national character usage
+	INVALID_KEY // For file handling conditions
+	AT_END      // For file handling conditions
 )
 
 // KeywordInfo contains information about a keyword
@@ -809,6 +817,39 @@ var keywordInfo = map[Token]KeywordInfo{
 		Token:    UNDERFLOW,
 		Class:    CLASS_KEYWORD,
 		Category: "procedure",
+	},
+	REMAINDER: {
+		Token:    REMAINDER,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{DIVIDE},
+		Category: "arithmetic",
+	},
+	POINTER: {
+		Token:    POINTER,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	INDEX: {
+		Token:    INDEX,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	NATIONAL: {
+		Token:    NATIONAL,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	INVALID_KEY: {
+		Token:    INVALID_KEY,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{READ, WRITE, START, DELETE},
+		Category: "condition",
+	},
+	AT_END: {
+		Token:    AT_END,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{READ},
+		Category: "condition",
 	},
 }
 

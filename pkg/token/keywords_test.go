@@ -860,6 +860,69 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{Token: UNDERFLOW, Class: CLASS_KEYWORD, Category: "procedure"},
 			wantOk:   true,
 		},
+		{
+			name:  "REMAINDER info",
+			token: REMAINDER,
+			wantInfo: KeywordInfo{
+				Token:    REMAINDER,
+				Class:    CLASS_KEYWORD,
+				Context:  []Token{DIVIDE},
+				Category: "arithmetic",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "POINTER info",
+			token: POINTER,
+			wantInfo: KeywordInfo{
+				Token:    POINTER,
+				Class:    CLASS_KEYWORD,
+				Category: "usage",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "INDEX info",
+			token: INDEX,
+			wantInfo: KeywordInfo{
+				Token:    INDEX,
+				Class:    CLASS_KEYWORD,
+				Category: "usage",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "NATIONAL info",
+			token: NATIONAL,
+			wantInfo: KeywordInfo{
+				Token:    NATIONAL,
+				Class:    CLASS_KEYWORD,
+				Category: "usage",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "INVALID KEY info",
+			token: INVALID_KEY,
+			wantInfo: KeywordInfo{
+				Token:    INVALID_KEY,
+				Class:    CLASS_KEYWORD,
+				Context:  []Token{READ, WRITE, START, DELETE},
+				Category: "condition",
+			},
+			wantOk: true,
+		},
+		{
+			name:  "AT END info",
+			token: AT_END,
+			wantInfo: KeywordInfo{
+				Token:    AT_END,
+				Class:    CLASS_KEYWORD,
+				Context:  []Token{READ},
+				Category: "condition",
+			},
+			wantOk: true,
+		},
 	}
 
 	for _, tt := range tests {
