@@ -1,5 +1,7 @@
 package token
 
+import "strconv"
+
 // Token represents a COBOL token type
 type Token int
 
@@ -37,6 +39,6 @@ func (t Token) String() string {
 	default:
 		// For other tokens, we'll need to implement lookup tables
 		// This will be handled by the token packages that define those tokens
-		return "TOKEN(" + string(t) + ")"
+		return "TOKEN(" + strconv.Itoa(int(t)) + ")"
 	}
 }
