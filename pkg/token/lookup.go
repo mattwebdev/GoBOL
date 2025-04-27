@@ -88,11 +88,6 @@ func LookupToken(s string) Token {
 		return STRING_LIT
 	}
 
-	// Look up in the token map first (for keywords, verbs, etc.)
-	if tok, ok := tokenMap[s]; ok {
-		return tok
-	}
-
 	// Check for level numbers first
 	if IsLevelNumber(s) {
 		return LEVEL_NUMBER
@@ -109,6 +104,16 @@ func LookupToken(s string) Token {
 			}
 		}
 		return NUMBER_LIT
+	}
+
+	// Special case: standalone period is illegal
+	if s == "." {
+		return ILLEGAL
+	}
+
+	// Look up in the token map (for keywords, verbs, etc.)
+	if tok, ok := tokenMap[s]; ok {
+		return tok
 	}
 
 	// If not found and valid identifier

@@ -1,6 +1,7 @@
 package token
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -44,99 +45,114 @@ func TestOperatorTokenValues(t *testing.T) {
 	}
 }
 
-func TestIsOperator(t *testing.T) {
+func TestOperatorInfo(t *testing.T) {
 	tests := []struct {
-		token    Token
-		expected bool
+		name           string
+		token          Token
+		wantType       OperatorType
+		wantPrecedence int
+		wantUnary      bool
+		wantBinary     bool
+		wantSymbol     string
+		wantKeywords   []string
 	}{
-		{OP_PLUS, true},
-		{OP_MINUS, true},
-		{OP_MULTIPLY, true},
-		{OP_EQUAL_TO, true},
-		{OP_AND, true},
-		{ILLEGAL, false},
-		{EOF, false},
-		{IDENTIFIER, false},
-		{MOVE, false}, // verb, not operator
+		{
+			name:           "Plus operator",
+			token:          OP_PLUS,
+			wantType:       OP_ARITHMETIC,
+			wantPrecedence: 10,
+			wantUnary:      true,
+			wantBinary:     true,
+			wantSymbol:     "+",
+		},
+		{
+			name:           "Power operator",
+			token:          OP_POWER,
+			wantType:       OP_ARITHMETIC,
+			wantPrecedence: 30,
+			wantUnary:      false,
+			wantBinary:     true,
+			wantSymbol:     "**",
+		},
+		{
+			name:           "Greater than operator",
+			token:          OP_GREATER_THAN,
+			wantType:       OP_COMPARISON,
+			wantPrecedence: 5,
+			wantUnary:      false,
+			wantBinary:     true,
+			wantSymbol:     ">",
+			wantKeywords:   []string{"GREATER", "GREATER THAN"},
+		},
+		{
+			name:           "Less equal operator",
+			token:          OP_LESS_EQUAL,
+			wantType:       OP_COMPARISON,
+			wantPrecedence: 5,
+			wantUnary:      false,
+			wantBinary:     true,
+			wantSymbol:     "<=",
+			wantKeywords:   []string{"LESS THAN OR EQUAL", "LESS OR EQUAL"},
+		},
+		{
+			name:           "Not equal operator",
+			token:          OP_NOT_EQUAL,
+			wantType:       OP_COMPARISON,
+			wantPrecedence: 5,
+			wantUnary:      false,
+			wantBinary:     true,
+			wantSymbol:     "<>",
+			wantKeywords:   []string{"NOT EQUAL", "NOT EQUAL TO"},
+		},
+		{
+			name:           "Logical NOT operator",
+			token:          OP_NOT,
+			wantType:       OP_LOGICAL,
+			wantPrecedence: 4,
+			wantUnary:      true,
+			wantBinary:     false,
+			wantKeywords:   []string{"NOT"},
+		},
+		{
+			name:           "Left parenthesis",
+			token:          OP_LPAREN,
+			wantType:       OP_DELIMITER,
+			wantPrecedence: 0,
+			wantUnary:      false,
+			wantBinary:     false,
+			wantSymbol:     "(",
+		},
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.token.String(), func(t *testing.T) {
-			if got := IsOperator(tt.token); got != tt.expected {
-				t.Errorf("IsOperator(%v) = %v, want %v", tt.token, got, tt.expected)
+		t.Run(tt.name, func(t *testing.T) {
+			info, ok := GetOperatorInfo(tt.token)
+			if !ok {
+				t.Fatalf("GetOperatorInfo(%v) returned not ok", tt.token)
 			}
-		})
-	}
-}
 
-func TestGetOperatorInfo(t *testing.T) {
-	tests := []struct {
-		token              Token
-		expectedExists     bool
-		expectedType       OperatorType
-		expectedPrecedence int
-		expectedIsUnary    bool
-		expectedIsBinary   bool
-		expectedSymbol     string
-		expectedKeywords   []string
-	}{
-		{
-			token:              OP_PLUS,
-			expectedExists:     true,
-			expectedType:       OP_ARITHMETIC,
-			expectedPrecedence: 10,
-			expectedIsUnary:    true,
-			expectedIsBinary:   true,
-			expectedSymbol:     "+",
-		},
-		{
-			token:              OP_EQUAL_TO,
-			expectedExists:     true,
-			expectedType:       OP_COMPARISON,
-			expectedPrecedence: 5,
-			expectedIsUnary:    false,
-			expectedIsBinary:   true,
-			expectedSymbol:     "=",
-			expectedKeywords:   []string{"EQUAL", "EQUAL TO", "EQUALS"},
-		},
-		{
-			token:          ILLEGAL,
-			expectedExists: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.token.String(), func(t *testing.T) {
-			info, exists := GetOperatorInfo(tt.token)
-			if exists != tt.expectedExists {
-				t.Errorf("GetOperatorInfo(%v) exists = %v, want %v", tt.token, exists, tt.expectedExists)
-				return
+			if info.Type != tt.wantType {
+				t.Errorf("Type = %v, want %v", info.Type, tt.wantType)
 			}
-			if !exists {
-				return
+			if info.Precedence != tt.wantPrecedence {
+				t.Errorf("Precedence = %v, want %v", info.Precedence, tt.wantPrecedence)
 			}
-			if info.Type != tt.expectedType {
-				t.Errorf("GetOperatorInfo(%v) type = %v, want %v", tt.token, info.Type, tt.expectedType)
+			if info.IsUnary != tt.wantUnary {
+				t.Errorf("IsUnary = %v, want %v", info.IsUnary, tt.wantUnary)
 			}
-			if info.Precedence != tt.expectedPrecedence {
-				t.Errorf("GetOperatorInfo(%v) precedence = %v, want %v", tt.token, info.Precedence, tt.expectedPrecedence)
+			if info.IsBinary != tt.wantBinary {
+				t.Errorf("IsBinary = %v, want %v", info.IsBinary, tt.wantBinary)
 			}
-			if info.IsUnary != tt.expectedIsUnary {
-				t.Errorf("GetOperatorInfo(%v) isUnary = %v, want %v", tt.token, info.IsUnary, tt.expectedIsUnary)
+			if info.Symbol != tt.wantSymbol {
+				t.Errorf("Symbol = %v, want %v", info.Symbol, tt.wantSymbol)
 			}
-			if info.IsBinary != tt.expectedIsBinary {
-				t.Errorf("GetOperatorInfo(%v) isBinary = %v, want %v", tt.token, info.IsBinary, tt.expectedIsBinary)
-			}
-			if info.Symbol != tt.expectedSymbol {
-				t.Errorf("GetOperatorInfo(%v) symbol = %v, want %v", tt.token, info.Symbol, tt.expectedSymbol)
-			}
-			if tt.expectedKeywords != nil {
-				if len(info.Keywords) != len(tt.expectedKeywords) {
-					t.Errorf("GetOperatorInfo(%v) keywords length = %v, want %v", tt.token, len(info.Keywords), len(tt.expectedKeywords))
+			if tt.wantKeywords != nil {
+				if len(info.Keywords) != len(tt.wantKeywords) {
+					t.Errorf("Keywords length = %v, want %v", len(info.Keywords), len(tt.wantKeywords))
 				} else {
-					for i, keyword := range tt.expectedKeywords {
-						if info.Keywords[i] != keyword {
-							t.Errorf("GetOperatorInfo(%v) keyword[%d] = %v, want %v", tt.token, i, info.Keywords[i], keyword)
+					for i, kw := range tt.wantKeywords {
+						if info.Keywords[i] != kw {
+							t.Errorf("Keywords[%d] = %v, want %v", i, info.Keywords[i], kw)
 						}
 					}
 				}
@@ -147,53 +163,164 @@ func TestGetOperatorInfo(t *testing.T) {
 
 func TestOperatorTypeChecks(t *testing.T) {
 	tests := []struct {
-		name    string
-		token   Token
-		isArith bool
-		isComp  bool
-		isLogic bool
+		name     string
+		token    Token
+		checks   []func(Token) bool
+		expected []bool
 	}{
 		{
-			name:    "Plus",
-			token:   OP_PLUS,
-			isArith: true,
-			isComp:  false,
-			isLogic: false,
+			name:     "Plus operator type checks",
+			token:    OP_PLUS,
+			checks:   []func(Token) bool{IsArithmeticOperator, IsComparisonOperator, IsLogicalOperator, IsUnaryOperator, IsBinaryOperator, IsDelimiter},
+			expected: []bool{true, false, false, true, true, false},
 		},
 		{
-			name:    "Equal To",
-			token:   OP_EQUAL_TO,
-			isArith: false,
-			isComp:  true,
-			isLogic: false,
+			name:     "Greater than operator type checks",
+			token:    OP_GREATER_THAN,
+			checks:   []func(Token) bool{IsArithmeticOperator, IsComparisonOperator, IsLogicalOperator, IsUnaryOperator, IsBinaryOperator, IsDelimiter},
+			expected: []bool{false, true, false, false, true, false},
 		},
 		{
-			name:    "AND",
-			token:   OP_AND,
-			isArith: false,
-			isComp:  false,
-			isLogic: true,
+			name:     "NOT operator type checks",
+			token:    OP_NOT,
+			checks:   []func(Token) bool{IsArithmeticOperator, IsComparisonOperator, IsLogicalOperator, IsUnaryOperator, IsBinaryOperator, IsDelimiter},
+			expected: []bool{false, false, true, true, false, false},
 		},
 		{
-			name:    "Not an operator",
-			token:   ILLEGAL,
-			isArith: false,
-			isComp:  false,
-			isLogic: false,
+			name:     "Period delimiter type checks",
+			token:    OP_PERIOD,
+			checks:   []func(Token) bool{IsArithmeticOperator, IsComparisonOperator, IsLogicalOperator, IsUnaryOperator, IsBinaryOperator, IsDelimiter},
+			expected: []bool{false, false, false, false, false, true},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsArithmeticOperator(tt.token); got != tt.isArith {
-				t.Errorf("IsArithmeticOperator(%v) = %v, want %v", tt.token, got, tt.isArith)
-			}
-			if got := IsComparisonOperator(tt.token); got != tt.isComp {
-				t.Errorf("IsComparisonOperator(%v) = %v, want %v", tt.token, got, tt.isComp)
-			}
-			if got := IsLogicalOperator(tt.token); got != tt.isLogic {
-				t.Errorf("IsLogicalOperator(%v) = %v, want %v", tt.token, got, tt.isLogic)
+			for i, check := range tt.checks {
+				got := check(tt.token)
+				if got != tt.expected[i] {
+					t.Errorf("%v(%v) = %v, want %v", getFuncName(check), tt.token, got, tt.expected[i])
+				}
 			}
 		})
 	}
+}
+
+func TestOperatorPrecedence(t *testing.T) {
+	tests := []struct {
+		name     string
+		ops      []Token
+		expected []int
+	}{
+		{
+			name:     "Arithmetic operators precedence",
+			ops:      []Token{OP_PLUS, OP_MINUS, OP_MULTIPLY, OP_DIVIDE, OP_POWER},
+			expected: []int{10, 10, 20, 20, 30},
+		},
+		{
+			name:     "Comparison operators precedence",
+			ops:      []Token{OP_EQUAL_TO, OP_GREATER_THAN, OP_LESS_THAN, OP_NOT_EQUAL},
+			expected: []int{5, 5, 5, 5},
+		},
+		{
+			name:     "Logical operators precedence",
+			ops:      []Token{OP_AND, OP_OR, OP_NOT},
+			expected: []int{3, 2, 4},
+		},
+		{
+			name:     "Delimiters precedence",
+			ops:      []Token{OP_LPAREN, OP_RPAREN, OP_PERIOD, OP_COMMA},
+			expected: []int{0, 0, 0, 0},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for i, op := range tt.ops {
+				got := GetOperatorPrecedence(op)
+				if got != tt.expected[i] {
+					t.Errorf("GetOperatorPrecedence(%v) = %v, want %v", op, got, tt.expected[i])
+				}
+			}
+		})
+	}
+}
+
+func TestOperatorSymbolAndKeywords(t *testing.T) {
+	tests := []struct {
+		name        string
+		token       Token
+		wantSymbol  string
+		wantKeyword []string
+	}{
+		{
+			name:       "Power operator",
+			token:      OP_POWER,
+			wantSymbol: "**",
+		},
+		{
+			name:        "Greater equal operator",
+			token:       OP_GREATER_EQUAL,
+			wantSymbol:  ">=",
+			wantKeyword: []string{"GREATER THAN OR EQUAL", "GREATER OR EQUAL"},
+		},
+		{
+			name:        "Less equal operator",
+			token:       OP_LESS_EQUAL,
+			wantSymbol:  "<=",
+			wantKeyword: []string{"LESS THAN OR EQUAL", "LESS OR EQUAL"},
+		},
+		{
+			name:        "Not equal operator",
+			token:       OP_NOT_EQUAL,
+			wantSymbol:  "<>",
+			wantKeyword: []string{"NOT EQUAL", "NOT EQUAL TO"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotSymbol := GetOperatorSymbol(tt.token)
+			if gotSymbol != tt.wantSymbol {
+				t.Errorf("GetOperatorSymbol(%v) = %v, want %v", tt.token, gotSymbol, tt.wantSymbol)
+			}
+
+			gotKeywords := GetOperatorKeywords(tt.token)
+			if tt.wantKeyword != nil {
+				if len(gotKeywords) != len(tt.wantKeyword) {
+					t.Errorf("GetOperatorKeywords(%v) length = %v, want %v", tt.token, len(gotKeywords), len(tt.wantKeyword))
+				} else {
+					for i, kw := range tt.wantKeyword {
+						if gotKeywords[i] != kw {
+							t.Errorf("GetOperatorKeywords(%v)[%d] = %v, want %v", tt.token, i, gotKeywords[i], kw)
+						}
+					}
+				}
+			}
+		})
+	}
+}
+
+// Helper function to get function name for error messages
+func getFuncName(f interface{}) string {
+	switch fn := f.(type) {
+	case func(Token) bool:
+		// Get pointer value to uniquely identify the function
+		ptr := reflect.ValueOf(fn).Pointer()
+		switch ptr {
+		case reflect.ValueOf(IsArithmeticOperator).Pointer():
+			return "IsArithmeticOperator"
+		case reflect.ValueOf(IsComparisonOperator).Pointer():
+			return "IsComparisonOperator"
+		case reflect.ValueOf(IsLogicalOperator).Pointer():
+			return "IsLogicalOperator"
+		case reflect.ValueOf(IsUnaryOperator).Pointer():
+			return "IsUnaryOperator"
+		case reflect.ValueOf(IsBinaryOperator).Pointer():
+			return "IsBinaryOperator"
+		case reflect.ValueOf(IsDelimiter).Pointer():
+			return "IsDelimiter"
+		}
+	}
+	return "unknown"
 }
