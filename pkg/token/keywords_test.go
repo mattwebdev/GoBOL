@@ -308,7 +308,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    ORGANIZATION,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -318,7 +318,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    SEQUENTIAL,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_organization",
 			},
 			wantOk: true,
 		},
@@ -328,7 +328,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    RELATIVE,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_organization",
 			},
 			wantOk: true,
 		},
@@ -338,7 +338,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    ACCESS,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -348,7 +348,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    RANDOM,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "access_mode",
 			},
 			wantOk: true,
 		},
@@ -358,7 +358,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    DYNAMIC,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "access_mode",
 			},
 			wantOk: true,
 		},
@@ -378,7 +378,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    STATUS,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -388,7 +388,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    RECORD,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "record",
 			},
 			wantOk: true,
 		},
@@ -398,7 +398,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    KEY,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "record_description",
 			},
 			wantOk: true,
 		},
@@ -408,7 +408,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    ALTERNATE,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "record_description",
 			},
 			wantOk: true,
 		},
@@ -418,7 +418,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    LABEL,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -428,7 +428,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    BLOCK,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -438,7 +438,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    CONTAINS,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -448,7 +448,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    RECORDING,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
@@ -458,7 +458,7 @@ func TestGetKeywordInfo(t *testing.T) {
 			wantInfo: KeywordInfo{
 				Token:    MODE,
 				Class:    CLASS_KEYWORD,
-				Category: "file",
+				Category: "file_description",
 			},
 			wantOk: true,
 		},
