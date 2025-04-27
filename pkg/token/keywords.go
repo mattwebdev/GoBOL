@@ -103,6 +103,38 @@ const (
 	CONTAINS
 	RECORDING
 	MODE
+
+	// Additional file-related keywords start at 800 to avoid collision with verbs
+	LINE Token = iota + 800
+	ADVANCING
+	OPTIONAL
+	LINAGE
+	FOOTING
+	TOP
+	BOTTOM
+	PADDING
+	CHARACTER
+	DATA_RECORD
+	CODE_SET
+	SHARING
+	WITH
+	NO
+	OTHER
+	LOCK
+	AUTOMATIC
+	MANUAL
+	EXCLUSIVE
+	RETRY
+	REPORT
+	PAGE
+	HEADING
+	FIRST
+	LAST
+	DETAIL
+	CONTROL
+	FINAL
+	SUM
+	RESET
 )
 
 // KeywordInfo contains information about a keyword
@@ -460,7 +492,158 @@ var keywordInfo = map[Token]KeywordInfo{
 		Class:    CLASS_KEYWORD,
 		Category: "file_description",
 	},
-	// Add more keyword patterns as needed...
+
+	// Add keyword info for new tokens
+	LINE: {
+		Token:    LINE,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	ADVANCING: {
+		Token:    ADVANCING,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	OPTIONAL: {
+		Token:    OPTIONAL,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	LINAGE: {
+		Token:    LINAGE,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	FOOTING: {
+		Token:    FOOTING,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	TOP: {
+		Token:    TOP,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	BOTTOM: {
+		Token:    BOTTOM,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	PADDING: {
+		Token:    PADDING,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	CHARACTER: {
+		Token:    CHARACTER,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	DATA_RECORD: {
+		Token:    DATA_RECORD,
+		Class:    CLASS_KEYWORD,
+		Category: "record_description",
+	},
+	CODE_SET: {
+		Token:    CODE_SET,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	SHARING: {
+		Token:    SHARING,
+		Class:    CLASS_KEYWORD,
+		Category: "file_sharing",
+	},
+	WITH: {
+		Token:    WITH,
+		Class:    CLASS_KEYWORD,
+		Category: "file_sharing",
+	},
+	NO: {
+		Token:    NO,
+		Class:    CLASS_KEYWORD,
+		Category: "file_sharing",
+	},
+	OTHER: {
+		Token:    OTHER,
+		Class:    CLASS_KEYWORD,
+		Category: "file_sharing",
+	},
+	LOCK: {
+		Token:    LOCK,
+		Class:    CLASS_KEYWORD,
+		Category: "file_sharing",
+	},
+	AUTOMATIC: {
+		Token:    AUTOMATIC,
+		Class:    CLASS_KEYWORD,
+		Category: "file_sharing",
+	},
+	MANUAL: {
+		Token:    MANUAL,
+		Class:    CLASS_KEYWORD,
+		Category: "file_sharing",
+	},
+	EXCLUSIVE: {
+		Token:    EXCLUSIVE,
+		Class:    CLASS_KEYWORD,
+		Category: "file_sharing",
+	},
+	RETRY: {
+		Token:    RETRY,
+		Class:    CLASS_KEYWORD,
+		Category: "file_sharing",
+	},
+	REPORT: {
+		Token:    REPORT,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
+	PAGE: {
+		Token:    PAGE,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
+	HEADING: {
+		Token:    HEADING,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
+	FIRST: {
+		Token:    FIRST,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
+	LAST: {
+		Token:    LAST,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
+	DETAIL: {
+		Token:    DETAIL,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
+	CONTROL: {
+		Token:    CONTROL,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
+	FINAL: {
+		Token:    FINAL,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
+	SUM: {
+		Token:    SUM,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
+	RESET: {
+		Token:    RESET,
+		Class:    CLASS_KEYWORD,
+		Category: "report_writer",
+	},
 }
 
 // IsKeyword checks if a token is a keyword
