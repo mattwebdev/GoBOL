@@ -195,10 +195,7 @@ func IsNumeric(s string) bool {
 		} else {
 			// If we find a non-digit, non-decimal character, it might be a variable name
 			// starting with a number (like "1VAR")
-			if hasDigit {
-				return true
-			}
-			return false
+			return hasDigit
 		}
 	}
 
