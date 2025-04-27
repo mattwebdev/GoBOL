@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-it's%20complicated-orange.svg)](https://github.com/mattwebdev/gobol)
 
-Yes, you read that right. I'm building a COBOL compiler. In Go. In 2024. Why? Because someone has to maintain those 240 billion lines of COBOL running the world's financial systems, and they might as well do it with modern tools.
+Yes, you read that right. I'm building a COBOL compiler. In Go. In 2025s. Why? Because someone has to maintain those 240 billion lines of COBOL running the world's financial systems, and they might as well do it with modern tools.
 
 ## 🤔 What's This All About?
 
