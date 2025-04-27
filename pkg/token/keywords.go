@@ -14,6 +14,12 @@ const (
 	BY
 	FROM
 	GIVING
+	WHEN
+	THROUGH
+	THRU // Alias for THROUGH
+	AFTER
+	BEFORE
+	STANDARD
 
 	// Division-related keywords
 	IDENTIFICATION
@@ -36,6 +42,22 @@ const (
 	INDEXED
 	VARYING
 	UNTIL
+	BINARY
+	COMPUTATIONAL
+	COMP   // Alias for COMPUTATIONAL
+	COMP_1 // COMP-1
+	COMP_2 // COMP-2
+	COMP_3 // COMP-3
+	COMP_4 // COMP-4
+	COMP_5 // COMP-5
+	SYNCHRONIZED
+	SYNC // Alias for SYNCHRONIZED
+	JUSTIFIED
+	JUST // Alias for JUSTIFIED
+	BLANK
+	RENAMES
+	REDEFINES
+	FILLER
 
 	// Comparison keywords
 	GREATER
@@ -86,6 +108,124 @@ var keywordInfo = map[Token]KeywordInfo{
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{GREATER, LESS},
 		Category: "comparison",
+	},
+	COMPUTATIONAL: {
+		Token:    COMPUTATIONAL,
+		Class:    CLASS_KEYWORD,
+		Aliases:  []string{"COMP"},
+		Category: "usage",
+	},
+	COMP: {
+		Token:    COMP,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	COMP_1: {
+		Token:    COMP_1,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	COMP_2: {
+		Token:    COMP_2,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	COMP_3: {
+		Token:    COMP_3,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	COMP_4: {
+		Token:    COMP_4,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	COMP_5: {
+		Token:    COMP_5,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	BINARY: {
+		Token:    BINARY,
+		Class:    CLASS_KEYWORD,
+		Category: "usage",
+	},
+	SYNCHRONIZED: {
+		Token:    SYNCHRONIZED,
+		Class:    CLASS_KEYWORD,
+		Aliases:  []string{"SYNC"},
+		Category: "alignment",
+	},
+	SYNC: {
+		Token:    SYNC,
+		Class:    CLASS_KEYWORD,
+		Category: "alignment",
+	},
+	JUSTIFIED: {
+		Token:    JUSTIFIED,
+		Class:    CLASS_KEYWORD,
+		Aliases:  []string{"JUST"},
+		Category: "alignment",
+	},
+	JUST: {
+		Token:    JUST,
+		Class:    CLASS_KEYWORD,
+		Category: "alignment",
+	},
+	BLANK: {
+		Token:    BLANK,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	RENAMES: {
+		Token:    RENAMES,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	REDEFINES: {
+		Token:    REDEFINES,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	FILLER: {
+		Token:    FILLER,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	THROUGH: {
+		Token:    THROUGH,
+		Class:    CLASS_KEYWORD,
+		Aliases:  []string{"THRU"},
+		Category: "range",
+	},
+	THRU: {
+		Token:    THRU,
+		Class:    CLASS_KEYWORD,
+		Category: "range",
+	},
+	WHEN: {
+		Token:    WHEN,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{EVALUATE},
+		Category: "control",
+	},
+	AFTER: {
+		Token:    AFTER,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{USE},
+		Category: "position",
+	},
+	BEFORE: {
+		Token:    BEFORE,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{USE},
+		Category: "position",
+	},
+	STANDARD: {
+		Token:    STANDARD,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{USE},
+		Category: "qualifier",
 	},
 	// Add more keyword patterns as needed...
 }

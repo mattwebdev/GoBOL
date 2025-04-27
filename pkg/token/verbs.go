@@ -9,6 +9,7 @@ const (
 	MULTIPLY
 	DIVIDE
 	COMPUTE
+	INITIALIZE
 
 	// I/O verbs
 	ACCEPT
@@ -20,6 +21,8 @@ const (
 	START
 	OPEN
 	CLOSE
+	RELEASE
+	RETURN
 
 	// Control flow verbs
 	PERFORM
@@ -29,6 +32,8 @@ const (
 	CONTINUE
 	EXIT
 	STOP
+	ALTER
+	USE
 
 	// String manipulation verbs
 	STRING_VERB // Renamed to avoid conflict with STRING_LIT
@@ -40,6 +45,10 @@ const (
 	SET
 	SORT
 	MERGE
+
+	// Report Writer verbs
+	GENERATE
+	SUPPRESS
 
 	// Program linkage verbs
 	CALL
@@ -125,6 +134,89 @@ var verbPatterns = map[Token]VerbInfo{
 				Optional: []bool{false, false},
 			},
 		},
+	},
+	INITIALIZE: {
+		Token:       INITIALIZE,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   -1,
+		Terminators: []Token{OP_PERIOD},
+		Modifiers:   []Token{TO, VALUE},
+		Patterns: []MultiWordPattern{
+			{
+				Parts:    []Token{INITIALIZE, TO, VALUE},
+				Result:   INITIALIZE,
+				Optional: []bool{false, false, false},
+			},
+		},
+	},
+	USE: {
+		Token:       USE,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   -1,
+		Terminators: []Token{OP_PERIOD},
+		Patterns: []MultiWordPattern{
+			{
+				Parts:    []Token{USE, AFTER, STANDARD},
+				Result:   USE,
+				Optional: []bool{false, false, false},
+			},
+			{
+				Parts:    []Token{USE, BEFORE, STANDARD},
+				Result:   USE,
+				Optional: []bool{false, false, false},
+			},
+		},
+	},
+	RELEASE: {
+		Token:       RELEASE,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   1,
+		Terminators: []Token{OP_PERIOD},
+		Patterns: []MultiWordPattern{
+			{
+				Parts:    []Token{RELEASE, FROM},
+				Result:   RELEASE,
+				Optional: []bool{false, true},
+			},
+		},
+	},
+	RETURN: {
+		Token:       RETURN,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   1,
+		Terminators: []Token{OP_PERIOD},
+	},
+	ALTER: {
+		Token:       ALTER,
+		Class:       CLASS_VERB,
+		MinParams:   2,
+		MaxParams:   2,
+		Terminators: []Token{OP_PERIOD},
+		Patterns: []MultiWordPattern{
+			{
+				Parts:    []Token{ALTER, TO},
+				Result:   ALTER,
+				Optional: []bool{false, false},
+			},
+		},
+	},
+	GENERATE: {
+		Token:       GENERATE,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   1,
+		Terminators: []Token{OP_PERIOD},
+	},
+	SUPPRESS: {
+		Token:       SUPPRESS,
+		Class:       CLASS_VERB,
+		MinParams:   1,
+		MaxParams:   1,
+		Terminators: []Token{OP_PERIOD},
 	},
 	// Add more verb patterns as needed...
 }

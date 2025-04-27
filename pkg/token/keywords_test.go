@@ -27,6 +27,12 @@ func TestKeywordTokenValues(t *testing.T) {
 		{BY, "BY"},
 		{FROM, "FROM"},
 		{GIVING, "GIVING"},
+		{WHEN, "WHEN"},
+		{THROUGH, "THROUGH"},
+		{THRU, "THRU"},
+		{AFTER, "AFTER"},
+		{BEFORE, "BEFORE"},
+		{STANDARD, "STANDARD"},
 		{IDENTIFICATION, "IDENTIFICATION"},
 		{ENVIRONMENT, "ENVIRONMENT"},
 		{DATA, "DATA"},
@@ -45,6 +51,22 @@ func TestKeywordTokenValues(t *testing.T) {
 		{INDEXED, "INDEXED"},
 		{VARYING, "VARYING"},
 		{UNTIL, "UNTIL"},
+		{BINARY, "BINARY"},
+		{COMPUTATIONAL, "COMPUTATIONAL"},
+		{COMP, "COMP"},
+		{COMP_1, "COMP_1"},
+		{COMP_2, "COMP_2"},
+		{COMP_3, "COMP_3"},
+		{COMP_4, "COMP_4"},
+		{COMP_5, "COMP_5"},
+		{SYNCHRONIZED, "SYNCHRONIZED"},
+		{SYNC, "SYNC"},
+		{JUSTIFIED, "JUSTIFIED"},
+		{JUST, "JUST"},
+		{BLANK, "BLANK"},
+		{RENAMES, "RENAMES"},
+		{REDEFINES, "REDEFINES"},
+		{FILLER, "FILLER"},
 		{GREATER, "GREATER"},
 		{LESS, "LESS"},
 		{EQUAL, "EQUAL"},
@@ -70,6 +92,23 @@ func TestIsKeyword(t *testing.T) {
 		{TO, true},
 		{GIVING, true},
 		{GREATER, true},
+		{BINARY, true},
+		{COMPUTATIONAL, true},
+		{COMP, true},
+		{SYNCHRONIZED, true},
+		{SYNC, true},
+		{JUSTIFIED, true},
+		{JUST, true},
+		{BLANK, true},
+		{RENAMES, true},
+		{REDEFINES, true},
+		{FILLER, true},
+		{THROUGH, true},
+		{THRU, true},
+		{WHEN, true},
+		{AFTER, true},
+		{BEFORE, true},
+		{STANDARD, true},
 		{ILLEGAL, false},
 		{EOF, false},
 		{IDENTIFIER, false},
@@ -86,21 +125,70 @@ func TestIsKeyword(t *testing.T) {
 
 func TestGetKeywordInfo(t *testing.T) {
 	tests := []struct {
-		token           Token
-		expectedExists  bool
-		expectedClass   TokenClass
-		expectedAliases []string
+		token            Token
+		expectedExists   bool
+		expectedClass    TokenClass
+		expectedAliases  []string
+		expectedCategory string
 	}{
 		{
-			token:           CORRESPONDING,
-			expectedExists:  true,
-			expectedClass:   CLASS_MODIFIER,
-			expectedAliases: []string{"CORR"},
+			token:            CORRESPONDING,
+			expectedExists:   true,
+			expectedClass:    CLASS_MODIFIER,
+			expectedAliases:  []string{"CORR"},
+			expectedCategory: "modifier",
 		},
 		{
-			token:          TO,
-			expectedExists: true,
-			expectedClass:  CLASS_KEYWORD,
+			token:            COMPUTATIONAL,
+			expectedExists:   true,
+			expectedClass:    CLASS_KEYWORD,
+			expectedAliases:  []string{"COMP"},
+			expectedCategory: "usage",
+		},
+		{
+			token:            SYNCHRONIZED,
+			expectedExists:   true,
+			expectedClass:    CLASS_KEYWORD,
+			expectedAliases:  []string{"SYNC"},
+			expectedCategory: "alignment",
+		},
+		{
+			token:            JUSTIFIED,
+			expectedExists:   true,
+			expectedClass:    CLASS_KEYWORD,
+			expectedAliases:  []string{"JUST"},
+			expectedCategory: "alignment",
+		},
+		{
+			token:            THROUGH,
+			expectedExists:   true,
+			expectedClass:    CLASS_KEYWORD,
+			expectedAliases:  []string{"THRU"},
+			expectedCategory: "range",
+		},
+		{
+			token:            WHEN,
+			expectedExists:   true,
+			expectedClass:    CLASS_KEYWORD,
+			expectedCategory: "control",
+		},
+		{
+			token:            AFTER,
+			expectedExists:   true,
+			expectedClass:    CLASS_KEYWORD,
+			expectedCategory: "position",
+		},
+		{
+			token:            BEFORE,
+			expectedExists:   true,
+			expectedClass:    CLASS_KEYWORD,
+			expectedCategory: "position",
+		},
+		{
+			token:            STANDARD,
+			expectedExists:   true,
+			expectedClass:    CLASS_KEYWORD,
+			expectedCategory: "qualifier",
 		},
 		{
 			token:          ILLEGAL,
@@ -120,6 +208,9 @@ func TestGetKeywordInfo(t *testing.T) {
 			}
 			if info.Class != tt.expectedClass {
 				t.Errorf("GetKeywordInfo(%v) class = %v, want %v", tt.token, info.Class, tt.expectedClass)
+			}
+			if tt.expectedCategory != "" && info.Category != tt.expectedCategory {
+				t.Errorf("GetKeywordInfo(%v) category = %v, want %v", tt.token, info.Category, tt.expectedCategory)
 			}
 			if tt.expectedAliases != nil {
 				if len(info.Aliases) != len(tt.expectedAliases) {
