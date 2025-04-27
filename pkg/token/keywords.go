@@ -135,6 +135,35 @@ const (
 	FINAL
 	SUM
 	RESET
+
+	// Additional ISO standard keywords start at 850
+	SIGN Token = iota + 850
+	SEPARATE
+	PACKED_DECIMAL
+	DISPLAY_1
+	GLOBAL
+	EXTERNAL
+	NUMERIC
+	ALPHABETIC
+	ALPHABETIC_LOWER
+	ALPHABETIC_UPPER
+	CLASS
+	POSITIVE
+	NEGATIVE
+	DECIMAL_POINT
+	CURRENCY
+	CONSOLE
+	PRINTER
+	SYSIN
+	SYSOUT
+	USING
+	RETURNING
+	RAISING
+	EXCEPTION
+	SIZE
+	ERROR
+	OVERFLOW
+	UNDERFLOW
 )
 
 // KeywordInfo contains information about a keyword
@@ -643,6 +672,143 @@ var keywordInfo = map[Token]KeywordInfo{
 		Token:    RESET,
 		Class:    CLASS_KEYWORD,
 		Category: "report_writer",
+	},
+
+	// Add keyword info for additional ISO standard keywords
+	SIGN: {
+		Token:    SIGN,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	SEPARATE: {
+		Token:    SEPARATE,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	PACKED_DECIMAL: {
+		Token:    PACKED_DECIMAL,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	DISPLAY_1: {
+		Token:    DISPLAY_1,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	GLOBAL: {
+		Token:    GLOBAL,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	EXTERNAL: {
+		Token:    EXTERNAL,
+		Class:    CLASS_KEYWORD,
+		Category: "data_description",
+	},
+	NUMERIC: {
+		Token:    NUMERIC,
+		Class:    CLASS_KEYWORD,
+		Category: "condition",
+	},
+	ALPHABETIC: {
+		Token:    ALPHABETIC,
+		Class:    CLASS_KEYWORD,
+		Category: "condition",
+	},
+	ALPHABETIC_LOWER: {
+		Token:    ALPHABETIC_LOWER,
+		Class:    CLASS_KEYWORD,
+		Category: "condition",
+	},
+	ALPHABETIC_UPPER: {
+		Token:    ALPHABETIC_UPPER,
+		Class:    CLASS_KEYWORD,
+		Category: "condition",
+	},
+	CLASS: {
+		Token:    CLASS,
+		Class:    CLASS_KEYWORD,
+		Category: "condition",
+	},
+	POSITIVE: {
+		Token:    POSITIVE,
+		Class:    CLASS_KEYWORD,
+		Category: "condition",
+	},
+	NEGATIVE: {
+		Token:    NEGATIVE,
+		Class:    CLASS_KEYWORD,
+		Category: "condition",
+	},
+	DECIMAL_POINT: {
+		Token:    DECIMAL_POINT,
+		Class:    CLASS_KEYWORD,
+		Category: "environment",
+	},
+	CURRENCY: {
+		Token:    CURRENCY,
+		Class:    CLASS_KEYWORD,
+		Category: "environment",
+	},
+	CONSOLE: {
+		Token:    CONSOLE,
+		Class:    CLASS_KEYWORD,
+		Category: "environment",
+	},
+	PRINTER: {
+		Token:    PRINTER,
+		Class:    CLASS_KEYWORD,
+		Category: "environment",
+	},
+	SYSIN: {
+		Token:    SYSIN,
+		Class:    CLASS_KEYWORD,
+		Category: "environment",
+	},
+	SYSOUT: {
+		Token:    SYSOUT,
+		Class:    CLASS_KEYWORD,
+		Category: "environment",
+	},
+	USING: {
+		Token:    USING,
+		Class:    CLASS_KEYWORD,
+		Category: "procedure",
+	},
+	RETURNING: {
+		Token:    RETURNING,
+		Class:    CLASS_KEYWORD,
+		Category: "procedure",
+	},
+	RAISING: {
+		Token:    RAISING,
+		Class:    CLASS_KEYWORD,
+		Category: "procedure",
+	},
+	EXCEPTION: {
+		Token:    EXCEPTION,
+		Class:    CLASS_KEYWORD,
+		Category: "condition",
+	},
+	SIZE: {
+		Token:    SIZE,
+		Class:    CLASS_KEYWORD,
+		Category: "procedure",
+	},
+	ERROR: {
+		Token:    ERROR,
+		Class:    CLASS_KEYWORD,
+		Category: "procedure",
+	},
+	OVERFLOW: {
+		Token:    OVERFLOW,
+		Class:    CLASS_KEYWORD,
+		Category: "procedure",
+	},
+	UNDERFLOW: {
+		Token:    UNDERFLOW,
+		Class:    CLASS_KEYWORD,
+		Category: "procedure",
 	},
 }
 
