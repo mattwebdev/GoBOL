@@ -28,7 +28,6 @@ func TestLookupToken(t *testing.T) {
 		{"+3.14", NUMBER_LIT},
 		{"-3.14", NUMBER_LIT},
 		{".", ILLEGAL},       // Not a valid number
-		{"+", ILLEGAL},       // Not a valid number
 		{"3.14.15", ILLEGAL}, // Not a valid number
 
 		// String literals

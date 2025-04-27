@@ -20,5 +20,5 @@ func NewTokenInfo(typ Token, literal string, pos Position) TokenInfo {
 
 // String returns a string representation of the token info
 func (t TokenInfo) String() string {
-	return fmt.Sprintf("%s at %s: %q", t.Type, t.Pos, t.Literal)
+	return fmt.Sprintf("Token{Type: %s, Literal: %s, Position: %d:%d}", t.Type, t.Literal, t.Pos.Line, t.Pos.Column)
 }

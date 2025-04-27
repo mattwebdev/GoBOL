@@ -24,9 +24,49 @@ var multiWordPatterns = []MultiWordPattern{
 
 	// Comparison patterns
 	{
+		Parts:    []Token{GREATER, THAN, OR, EQUAL, TO},
+		Result:   OP_GREATER_EQUAL,
+		Optional: []bool{false, false, false, false, true}, // "TO" is optional
+	},
+	{
+		Parts:    []Token{GREATER, OR, EQUAL, TO},
+		Result:   OP_GREATER_EQUAL,
+		Optional: []bool{false, false, false, true}, // "TO" is optional
+	},
+	{
+		Parts:    []Token{GREATER, THAN, OR, EQUAL},
+		Result:   OP_GREATER_EQUAL,
+		Optional: []bool{false, false, false, false},
+	},
+	{
+		Parts:    []Token{GREATER, OR, EQUAL},
+		Result:   OP_GREATER_EQUAL,
+		Optional: []bool{false, false, false},
+	},
+	{
 		Parts:    []Token{GREATER, THAN},
 		Result:   OP_GREATER_THAN,
 		Optional: []bool{false, false},
+	},
+	{
+		Parts:    []Token{LESS, THAN, OR, EQUAL, TO},
+		Result:   OP_LESS_EQUAL,
+		Optional: []bool{false, false, false, false, true}, // "TO" is optional
+	},
+	{
+		Parts:    []Token{LESS, OR, EQUAL, TO},
+		Result:   OP_LESS_EQUAL,
+		Optional: []bool{false, false, false, true}, // "TO" is optional
+	},
+	{
+		Parts:    []Token{LESS, THAN, OR, EQUAL},
+		Result:   OP_LESS_EQUAL,
+		Optional: []bool{false, false, false, false},
+	},
+	{
+		Parts:    []Token{LESS, OR, EQUAL},
+		Result:   OP_LESS_EQUAL,
+		Optional: []bool{false, false, false},
 	},
 	{
 		Parts:    []Token{LESS, THAN},
@@ -37,11 +77,6 @@ var multiWordPatterns = []MultiWordPattern{
 		Parts:    []Token{EQUAL, TO},
 		Result:   OP_EQUAL_TO,
 		Optional: []bool{false, true}, // "TO" is optional
-	},
-	{
-		Parts:    []Token{GREATER, THAN, OR, EQUAL, TO},
-		Result:   OP_GREATER_EQUAL,
-		Optional: []bool{false, false, false, false, true}, // "TO" is optional
 	},
 
 	// GO TO pattern
@@ -168,33 +203,33 @@ func tryMatchPattern(tokens []TokenInfo, pattern MultiWordPattern) (bool, int) {
 	patternIdx := 0
 	tokenIdx := 0
 
-	for patternIdx < len(pattern.Parts) && tokenIdx < len(tokens) {
-		if pattern.Optional[patternIdx] {
-			// If this part is optional, try matching with and without it
-			if tokens[tokenIdx].Type == pattern.Parts[patternIdx] {
-				patternIdx++
-				tokenIdx++
-			} else {
-				patternIdx++
-				continue
+	// Try to match all pattern parts
+	for patternIdx < len(pattern.Parts) {
+		// If we've run out of tokens but still have required parts, no match
+		if tokenIdx >= len(tokens) {
+			// Check if remaining pattern parts are optional
+			for i := patternIdx; i < len(pattern.Parts); i++ {
+				if !pattern.Optional[i] {
+					return false, 0
+				}
 			}
-		} else {
-			// This part is required
-			if tokens[tokenIdx].Type != pattern.Parts[patternIdx] {
-				return false, 0
-			}
+			break
+		}
+
+		// Check if current part matches
+		if tokens[tokenIdx].Type == pattern.Parts[patternIdx] {
 			patternIdx++
 			tokenIdx++
-		}
-	}
-
-	// Check if we matched all required parts
-	for i := patternIdx; i < len(pattern.Parts); i++ {
-		if !pattern.Optional[i] {
+		} else if pattern.Optional[patternIdx] {
+			// Skip optional part if it doesn't match
+			patternIdx++
+		} else {
+			// Required part doesn't match
 			return false, 0
 		}
 	}
 
+	// We matched all parts (or remaining parts are optional)
 	return true, tokenIdx
 }
 
