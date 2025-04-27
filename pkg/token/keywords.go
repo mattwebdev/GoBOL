@@ -85,6 +85,24 @@ const (
 	EQUALS
 	CORRESPONDING
 	CORR // Alias for CORRESPONDING
+
+	// File-related keywords
+	ORGANIZATION
+	SEQUENTIAL
+	RELATIVE
+	ACCESS
+	RANDOM
+	DYNAMIC
+	FILE
+	STATUS
+	RECORD
+	KEY
+	ALTERNATE
+	LABEL
+	BLOCK
+	CONTAINS
+	RECORDING
+	MODE
 )
 
 // KeywordInfo contains information about a keyword
@@ -347,6 +365,100 @@ var keywordInfo = map[Token]KeywordInfo{
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{DISPLAY},
 		Category: "scope_terminator",
+	},
+
+	// File-related keyword info
+	ORGANIZATION: {
+		Token:    ORGANIZATION,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{FILE},
+		Category: "file_description",
+	},
+	SEQUENTIAL: {
+		Token:    SEQUENTIAL,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{ORGANIZATION},
+		Category: "file_organization",
+	},
+	RELATIVE: {
+		Token:    RELATIVE,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{ORGANIZATION},
+		Category: "file_organization",
+	},
+	ACCESS: {
+		Token:    ACCESS,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{FILE},
+		Category: "file_description",
+	},
+	RANDOM: {
+		Token:    RANDOM,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{ACCESS},
+		Category: "access_mode",
+	},
+	DYNAMIC: {
+		Token:    DYNAMIC,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{ACCESS},
+		Category: "access_mode",
+	},
+	FILE: {
+		Token:    FILE,
+		Class:    CLASS_KEYWORD,
+		Category: "file",
+	},
+	STATUS: {
+		Token:    STATUS,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{FILE},
+		Category: "file_description",
+	},
+	RECORD: {
+		Token:    RECORD,
+		Class:    CLASS_KEYWORD,
+		Category: "record",
+	},
+	KEY: {
+		Token:    KEY,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{RECORD},
+		Category: "record_description",
+	},
+	ALTERNATE: {
+		Token:    ALTERNATE,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{KEY},
+		Category: "record_description",
+	},
+	LABEL: {
+		Token:    LABEL,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{RECORD},
+		Category: "file_description",
+	},
+	BLOCK: {
+		Token:    BLOCK,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{CONTAINS},
+		Category: "file_description",
+	},
+	CONTAINS: {
+		Token:    CONTAINS,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
+	},
+	RECORDING: {
+		Token:    RECORDING,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{MODE},
+		Category: "file_description",
+	},
+	MODE: {
+		Token:    MODE,
+		Class:    CLASS_KEYWORD,
+		Category: "file_description",
 	},
 	// Add more keyword patterns as needed...
 }

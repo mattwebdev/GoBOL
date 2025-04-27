@@ -126,6 +126,24 @@ var tokenStrings = map[Token]string{
 	END_CALL:      "END-CALL",
 	END_ACCEPT:    "END-ACCEPT",
 	END_DISPLAY:   "END-DISPLAY",
+
+	// File-related keywords
+	ORGANIZATION: "ORGANIZATION",
+	SEQUENTIAL:   "SEQUENTIAL",
+	RELATIVE:     "RELATIVE",
+	ACCESS:       "ACCESS",
+	RANDOM:       "RANDOM",
+	DYNAMIC:      "DYNAMIC",
+	FILE:         "FILE",
+	STATUS:       "STATUS",
+	RECORD:       "RECORD",
+	KEY:          "KEY",
+	ALTERNATE:    "ALTERNATE",
+	LABEL:        "LABEL",
+	BLOCK:        "BLOCK",
+	CONTAINS:     "CONTAINS",
+	RECORDING:    "RECORDING",
+	MODE:         "MODE",
 }
 
 // String returns the string representation of a token
