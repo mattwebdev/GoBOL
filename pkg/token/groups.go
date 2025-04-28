@@ -7,9 +7,10 @@ type TokenGroup struct {
 	Parameters  []TokenInfo // The parameters/operands
 	Terminators []TokenInfo // Statement terminators (period, etc)
 	Context     struct {    // Contextual information
-		Division string // Current division
-		Section  string // Current section
-		Area     rune   // A or B
+		Division string  // Current division
+		Section  string  // Current section
+		Area     rune    // A or B
+		Tokens   []Token // Current token context
 	}
 }
 
@@ -20,22 +21,33 @@ func NewTokenGroup(main TokenInfo) *TokenGroup {
 		Modifiers:   make([]TokenInfo, 0),
 		Parameters:  make([]TokenInfo, 0),
 		Terminators: make([]TokenInfo, 0),
+		Context: struct {
+			Division string
+			Section  string
+			Area     rune
+			Tokens   []Token
+		}{
+			Tokens: make([]Token, 0),
+		},
 	}
 }
 
 // AddModifier adds a modifier token to the group
 func (g *TokenGroup) AddModifier(t TokenInfo) {
 	g.Modifiers = append(g.Modifiers, t)
+	g.Context.Tokens = append(g.Context.Tokens, t.Type)
 }
 
 // AddParameter adds a parameter token to the group
 func (g *TokenGroup) AddParameter(t TokenInfo) {
 	g.Parameters = append(g.Parameters, t)
+	g.Context.Tokens = append(g.Context.Tokens, t.Type)
 }
 
 // AddTerminator adds a terminator token to the group
 func (g *TokenGroup) AddTerminator(t TokenInfo) {
 	g.Terminators = append(g.Terminators, t)
+	g.Context.Tokens = append(g.Context.Tokens, t.Type)
 }
 
 // IsComplete checks if the token group forms a complete valid statement

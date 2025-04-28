@@ -1,6 +1,7 @@
 package token
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -14,6 +15,13 @@ func TestFileOrgTokenValues(t *testing.T) {
 		{QUEUE, "QUEUE"},
 		{RELATIVE_KEY, "RELATIVE KEY"},
 		{RECORD_KEY, "RECORD KEY"},
+		{FILE_SHARING, "FILE SHARING"},
+		{FILE_LOCKING, "FILE LOCKING"},
+		{FILE_RECORDING, "FILE RECORDING"},
+		{FILE_ACCESS_MODE, "FILE ACCESS MODE"},
+		{FILE_ORGANIZATION_INDEXED, "FILE ORGANIZATION INDEXED"},
+		{FILE_ORGANIZATION_RELATIVE, "FILE ORGANIZATION RELATIVE"},
+		{FILE_ORGANIZATION_SEQUENTIAL, "FILE ORGANIZATION SEQUENTIAL"},
 	}
 
 	// Test that all file organization tokens are unique
@@ -43,6 +51,13 @@ func TestIsFileOrg(t *testing.T) {
 		{"QUEUE is file org", QUEUE, true},
 		{"RELATIVE_KEY is file org", RELATIVE_KEY, true},
 		{"RECORD_KEY is file org", RECORD_KEY, true},
+		{"FILE_SHARING is file org", FILE_SHARING, true},
+		{"FILE_LOCKING is file org", FILE_LOCKING, true},
+		{"FILE_RECORDING is file org", FILE_RECORDING, true},
+		{"FILE_ACCESS_MODE is file org", FILE_ACCESS_MODE, true},
+		{"FILE_ORGANIZATION_INDEXED is file org", FILE_ORGANIZATION_INDEXED, true},
+		{"FILE_ORGANIZATION_RELATIVE is file org", FILE_ORGANIZATION_RELATIVE, true},
+		{"FILE_ORGANIZATION_SEQUENTIAL is file org", FILE_ORGANIZATION_SEQUENTIAL, true},
 		{"MOVE is not file org", MOVE, false},
 		{"ADD is not file org", ADD, false},
 		{"ILLEGAL is not file org", ILLEGAL, false},
@@ -59,74 +74,110 @@ func TestIsFileOrg(t *testing.T) {
 
 func TestGetFileOrgInfo(t *testing.T) {
 	tests := []struct {
-		name         string
-		token        Token
-		wantClass    TokenClass
-		wantCategory string
-		wantContext  []Token
-		wantOk       bool
+		name     string
+		token    Token
+		expected FileOrgInfo
+		exists   bool
 	}{
 		{
-			name:         "LINE_SEQUENTIAL info",
-			token:        LINE_SEQUENTIAL,
-			wantClass:    CLASS_FILE,
-			wantCategory: "file organization",
-			wantContext:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
-			wantOk:       true,
+			name:  "LINE_SEQUENTIAL info",
+			token: LINE_SEQUENTIAL,
+			expected: FileOrgInfo{
+				Token:    LINE_SEQUENTIAL,
+				Class:    CLASS_FILE,
+				Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+				Category: "file organization",
+			},
+			exists: true,
 		},
 		{
-			name:         "QUEUE info",
-			token:        QUEUE,
-			wantClass:    CLASS_FILE,
-			wantCategory: "file organization",
-			wantContext:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
-			wantOk:       true,
+			name:  "FILE_SHARING info",
+			token: FILE_SHARING,
+			expected: FileOrgInfo{
+				Token:    FILE_SHARING,
+				Class:    CLASS_FILE,
+				Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+				Category: "file sharing",
+			},
+			exists: true,
 		},
 		{
-			name:         "RELATIVE_KEY info",
-			token:        RELATIVE_KEY,
-			wantClass:    CLASS_FILE,
-			wantCategory: "file organization",
-			wantContext:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
-			wantOk:       true,
-		},
-		{
-			name:         "RECORD_KEY info",
-			token:        RECORD_KEY,
-			wantClass:    CLASS_FILE,
-			wantCategory: "file organization",
-			wantContext:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
-			wantOk:       true,
-		},
-		{
-			name:   "MOVE has no file org info",
-			token:  MOVE,
-			wantOk: false,
+			name:     "MOVE info",
+			token:    MOVE,
+			expected: FileOrgInfo{},
+			exists:   false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotInfo, gotOk := GetFileOrgInfo(tt.token)
-			if gotOk != tt.wantOk {
-				t.Errorf("GetFileOrgInfo(%v) ok = %v, want %v", tt.token, gotOk, tt.wantOk)
+			got, exists := GetFileOrgInfo(tt.token)
+			if exists != tt.exists {
+				t.Errorf("GetFileOrgInfo(%v) exists = %v, want %v", tt.token, exists, tt.exists)
 			}
-			if gotOk {
-				if gotInfo.Class != tt.wantClass {
-					t.Errorf("GetFileOrgInfo(%v).Class = %v, want %v", tt.token, gotInfo.Class, tt.wantClass)
-				}
-				if gotInfo.Category != tt.wantCategory {
-					t.Errorf("GetFileOrgInfo(%v).Category = %v, want %v", tt.token, gotInfo.Category, tt.wantCategory)
-				}
-				if len(gotInfo.Context) != len(tt.wantContext) {
-					t.Errorf("GetFileOrgInfo(%v).Context length = %v, want %v", tt.token, len(gotInfo.Context), len(tt.wantContext))
-				} else {
-					for i, v := range gotInfo.Context {
-						if v != tt.wantContext[i] {
-							t.Errorf("GetFileOrgInfo(%v).Context[%d] = %v, want %v", tt.token, i, v, tt.wantContext[i])
-						}
-					}
-				}
+			if tt.exists && !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("GetFileOrgInfo(%v) = %v, want %v", tt.token, got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestFileOrgValidation(t *testing.T) {
+	tests := []struct {
+		name    string
+		token   Token
+		context []Token
+		wantErr bool
+	}{
+		{
+			name:    "valid file organization in correct context",
+			token:   FILE_ORGANIZATION_INDEXED,
+			context: []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+			wantErr: false,
+		},
+		{
+			name:    "valid file sharing in correct context",
+			token:   FILE_SHARING,
+			context: []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+			wantErr: false,
+		},
+		{
+			name:    "valid file locking in correct context",
+			token:   FILE_LOCKING,
+			context: []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+			wantErr: false,
+		},
+		{
+			name:    "valid file recording in correct context",
+			token:   FILE_RECORDING,
+			context: []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+			wantErr: false,
+		},
+		{
+			name:    "valid file access mode in correct context",
+			token:   FILE_ACCESS_MODE,
+			context: []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+			wantErr: false,
+		},
+		{
+			name:    "invalid file organization in wrong context",
+			token:   FILE_ORGANIZATION_INDEXED,
+			context: []Token{ILLEGAL, EOF},
+			wantErr: true,
+		},
+		{
+			name:    "invalid file sharing in wrong context",
+			token:   FILE_SHARING,
+			context: []Token{ILLEGAL, EOF},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := ValidateTokenContext(tt.token, tt.context)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ValidateTokenContext() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

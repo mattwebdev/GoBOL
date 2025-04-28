@@ -21,6 +21,7 @@ const (
 	BEFORE
 	STANDARD
 	BASED
+	// THEN is defined in types.go
 
 	// End-scope keywords
 	END_IF
@@ -1005,6 +1006,13 @@ var keywordInfos = map[Token]KeywordInfo{
 		Token:    GROUP_INDICATE,
 		Class:    CLASS_KEYWORD,
 		Category: "report",
+	},
+	PICTURE: {
+		Token:    PICTURE,
+		Class:    CLASS_KEYWORD,
+		Aliases:  []string{"PIC"},
+		Context:  []Token{DATA_DIVISION},
+		Category: "data description",
 	},
 }
 

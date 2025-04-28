@@ -17,6 +17,8 @@ const (
 	STRING_LIT   // String literal token
 	NUMBER_LIT   // Number literal token
 	LEVEL_NUMBER // COBOL level number (01-49, 66, 77, 88)
+	PERIOD       // Statement terminator (.)
+	THEN         // THEN keyword
 
 	// Data type tokens
 	BINARY_CHAR Token = iota + 200
@@ -34,15 +36,25 @@ const (
 	PACKED_DECIMAL_TYPE
 	DISPLAY_1_TYPE
 
+	// Additional usage tokens (starting at 2000 to avoid conflicts)
+	USAGE_OBJECT Token = iota + 2000
+	USAGE_REFERENCE
+	USAGE_POINTER_64
+	USAGE_FUNCTION_POINTER
+	USAGE_PROGRAM_POINTER
+	USAGE_METHOD_POINTER
+	USAGE_INDEX_64
+	USAGE_INDEX_32
+
 	// Additional scope terminators
-	END_START
+	END_START Token = iota + 3000
 	END_DELETE
 	END_REWRITE
 	END_RETURN
 	END_INITIALIZE
 
 	// Additional condition keywords
-	ON_EXCEPTION
+	ON_EXCEPTION Token = iota + 4000
 	NOT_ON_EXCEPTION
 	ON_OVERFLOW
 	NOT_ON_OVERFLOW
@@ -50,7 +62,7 @@ const (
 	NOT_ON_SIZE_ERROR
 
 	// Additional file organization keywords
-	LINE_SEQUENTIAL
+	LINE_SEQUENTIAL Token = iota + 5000
 	QUEUE
 	RELATIVE_KEY
 	RECORD_KEY
@@ -63,9 +75,21 @@ const (
 	SHARING_DENY_READ
 	SHARING_DENY_WRITE
 	SHARING_DENY_ALL
+	// Additional file handling tokens
+	FILE_SHARING
+	FILE_LOCKING
+	FILE_RECORDING
+	FILE_ACCESS_MODE
+	FILE_ORGANIZATION_INDEXED
+	FILE_ORGANIZATION_RELATIVE
+	FILE_ORGANIZATION_SEQUENTIAL
 
-	// Report Writer tokens (starting at 900)
-	INITIATE Token = iota + 900
+	// Report Writer tokens (starting at 6000)
+	REPORT_GROUP Token = iota + 6000
+	REPORT_LINE
+	REPORT_COLUMN
+	REPORT_PAGE
+	INITIATE
 	TERMINATE
 	LINE_COUNTER
 	PAGE_COUNTER
@@ -88,7 +112,7 @@ const (
 	PAGE_FOOTING
 	REPORT_FOOTING
 	// Additional report writer group indicators
-	GROUP_INDICATE_1 Token = iota + 950
+	GROUP_INDICATE_1
 	GROUP_INDICATE_2
 	GROUP_INDICATE_3
 	GROUP_INDICATE_4
@@ -98,8 +122,8 @@ const (
 	GROUP_INDICATE_8
 	GROUP_INDICATE_9
 
-	// ISO standard special registers (starting at 1100)
-	DEBUG_ITEM Token = iota + 1100
+	// ISO standard special registers (starting at 8000)
+	DEBUG_ITEM Token = iota + 8000
 	DEBUG_LINE
 	DEBUG_NAME
 	DEBUG_SUB_1
@@ -108,29 +132,39 @@ const (
 	DEBUG_CONTENTS
 	DEBUGGING
 
-	// ISO standard class conditions (starting at 1200)
-	CLASS_ALPHABETIC Token = iota + 1200
+	// ISO standard class conditions (starting at 9000)
+	CLASS_ALPHABETIC Token = iota + 9000
 	CLASS_ALPHANUMERIC
 	CLASS_NUMERIC
 	CLASS_BOOLEAN
 	CLASS_OBJECT
 	CLASS_REFERENCE
 
-	// ISO standard sign conditions (starting at 1300)
-	SIGN_LEADING Token = iota + 1300
+	// Additional class conditions
+	CLASS_OBJECT_REFERENCE Token = iota + 10000
+	CLASS_ALPHANUMERIC_EDITED
+	CLASS_NUMERIC_EDITED
+	CLASS_DBCS
+	CLASS_KANJI
+	CLASS_NATIONAL_EDITED
+	CLASS_BOOLEAN_OBJECT
+	CLASS_BOOLEAN_REFERENCE
+
+	// ISO standard sign conditions (starting at 11000)
+	SIGN_LEADING Token = iota + 11000
 	SIGN_TRAILING
 	SIGN_SEPARATE
 
-	// ISO standard currency handling (starting at 1400)
-	CURRENCY_SIGN Token = iota + 1400
+	// ISO standard currency handling (starting at 12000)
+	CURRENCY_SIGN Token = iota + 12000
 	CURRENCY_SYMBOL
 
-	// ISO standard decimal handling (starting at 1500)
-	DECIMAL_POINT_IS_COMMA Token = iota + 1500
+	// ISO standard decimal handling (starting at 13000)
+	DECIMAL_POINT_IS_COMMA Token = iota + 13000
 	DECIMAL_POINT_IS_PERIOD
 
-	// Communication tokens
-	COMMUNICATION_SECTION
+	// Communication tokens (starting at 14000)
+	COMMUNICATION_SECTION Token = iota + 14000
 	CD
 	SYMBOLIC_QUEUE
 	SYMBOLIC_SUB_QUEUE
@@ -141,8 +175,8 @@ const (
 	END_KEY
 	STATUS_KEY
 
-	// Screen tokens (excluding SCREEN_SECTION which is already defined)
-	BLANK_SCREEN
+	// Screen tokens (starting at 15000)
+	BLANK_SCREEN Token = iota + 15000
 	BLANK_LINE
 	BELL
 	BLINK
@@ -155,13 +189,52 @@ const (
 	AUTO
 	FULL
 	REQUIRED
+	SCREEN_ATTRIBUTE
+	SCREEN_COLOR
+	SCREEN_FOREGROUND
+	SCREEN_BACKGROUND
 
-	// Table handling tokens (excluding OCCURS which is already defined)
-	DEPENDING_ON
+	// Table handling tokens (starting at 16000)
+	DEPENDING_ON Token = iota + 16000
 	ASCENDING
 	DESCENDING
 	INDEXED_BY
 	KEY_IS
+
+	// Communication tokens (starting at 17000)
+	COMMUNICATION_DESCRIPTION Token = iota + 17000
+	COMMUNICATION_MESSAGE
+	COMMUNICATION_QUEUE
+	COMMUNICATION_STATUS
+	COMMUNICATION_ERROR
+	COMMUNICATION_TIMEOUT
+	COMMUNICATION_RETRY
+	COMMUNICATION_RECOVERY
+
+	// Table handling tokens (starting at 18000)
+	TABLE_OCCURS Token = iota + 18000
+	TABLE_INDEX
+	TABLE_KEY
+	TABLE_SEARCH
+	TABLE_SORT
+	TABLE_MERGE
+	TABLE_BINARY_SEARCH
+	TABLE_SEQUENTIAL_SEARCH
+
+	// Object-Oriented tokens (starting at 19000)
+	CLASS_DEFINITION Token = iota + 19000
+	OO_OBJECT
+	OO_METHOD
+	OO_PROPERTY
+	OO_INHERITS
+	OO_INTERFACE
+	OO_IMPLEMENTS
+	OO_NEW
+	OO_SUPER
+	OO_THIS
+	OO_EVENT
+	OO_RAISE
+	OO_HANDLE
 )
 
 var (
@@ -177,6 +250,8 @@ var tokenStrings = map[Token]string{
 	STRING_LIT:   "STRING_LIT",
 	NUMBER_LIT:   "NUMBER_LIT",
 	LEVEL_NUMBER: "LEVEL_NUMBER",
+	PERIOD:       ".",
+	THEN:         "THEN",
 	// Data type tokens
 	NATIONAL_TYPE:       "NATIONAL",
 	PACKED_DECIMAL_TYPE: "PACKED-DECIMAL",
@@ -414,7 +489,11 @@ var tokenStrings = map[Token]string{
 	SHARING_DENY_WRITE: "SHARING DENY WRITE",
 	SHARING_DENY_ALL:   "SHARING DENY ALL",
 
-	// Report Writer tokens (starting at 900)
+	// Report Writer tokens (starting at 6000)
+	REPORT_GROUP:   "REPORT GROUP",
+	REPORT_LINE:    "REPORT LINE",
+	REPORT_COLUMN:  "REPORT COLUMN",
+	REPORT_PAGE:    "REPORT PAGE",
 	INITIATE:       "INITIATE",
 	TERMINATE:      "TERMINATE",
 	LINE_COUNTER:   "LINE-COUNTER",
@@ -480,6 +559,58 @@ var tokenStrings = map[Token]string{
 	// ISO standard decimal handling
 	DECIMAL_POINT_IS_COMMA:  "DECIMAL-POINT-IS-COMMA",
 	DECIMAL_POINT_IS_PERIOD: "DECIMAL-POINT-IS-PERIOD",
+
+	// New object-oriented verbs
+	INVOKE:                "INVOKE",
+	SET_ADDRESS:           "SET ADDRESS",
+	SET_POINTER:           "SET POINTER",
+	SET_PROCEDURE_POINTER: "SET PROCEDURE-POINTER",
+	SET_FUNCTION_POINTER:  "SET FUNCTION-POINTER",
+	SET_METHOD_POINTER:    "SET METHOD-POINTER",
+
+	// Communication tokens
+	COMMUNICATION_DESCRIPTION: "COMMUNICATION DESCRIPTION",
+	COMMUNICATION_MESSAGE:     "COMMUNICATION MESSAGE",
+	COMMUNICATION_QUEUE:       "COMMUNICATION QUEUE",
+	COMMUNICATION_STATUS:      "COMMUNICATION STATUS",
+	COMMUNICATION_ERROR:       "COMMUNICATION ERROR",
+	COMMUNICATION_TIMEOUT:     "COMMUNICATION TIMEOUT",
+	COMMUNICATION_RETRY:       "COMMUNICATION RETRY",
+	COMMUNICATION_RECOVERY:    "COMMUNICATION RECOVERY",
+
+	// Table handling tokens
+	TABLE_OCCURS:            "TABLE OCCURS",
+	TABLE_INDEX:             "TABLE INDEX",
+	TABLE_KEY:               "TABLE KEY",
+	TABLE_SEARCH:            "TABLE SEARCH",
+	TABLE_SORT:              "TABLE SORT",
+	TABLE_MERGE:             "TABLE MERGE",
+	TABLE_BINARY_SEARCH:     "TABLE BINARY SEARCH",
+	TABLE_SEQUENTIAL_SEARCH: "TABLE SEQUENTIAL SEARCH",
+
+	// Object-Oriented tokens
+	CLASS_DEFINITION: "CLASS DEFINITION",
+	OO_OBJECT:        "OO OBJECT",
+	OO_METHOD:        "OO METHOD",
+	OO_PROPERTY:      "OO PROPERTY",
+	OO_INHERITS:      "OO INHERITS",
+	OO_INTERFACE:     "OO INTERFACE",
+	OO_IMPLEMENTS:    "OO IMPLEMENTS",
+	OO_NEW:           "OO NEW",
+	OO_SUPER:         "OO SUPER",
+	OO_THIS:          "OO THIS",
+	OO_EVENT:         "OO EVENT",
+	OO_RAISE:         "OO RAISE",
+	OO_HANDLE:        "OO HANDLE",
+
+	// New file handling tokens
+	FILE_SHARING:                 "FILE SHARING",
+	FILE_LOCKING:                 "FILE LOCKING",
+	FILE_RECORDING:               "FILE RECORDING",
+	FILE_ACCESS_MODE:             "FILE ACCESS MODE",
+	FILE_ORGANIZATION_INDEXED:    "FILE ORGANIZATION INDEXED",
+	FILE_ORGANIZATION_RELATIVE:   "FILE ORGANIZATION RELATIVE",
+	FILE_ORGANIZATION_SEQUENTIAL: "FILE ORGANIZATION SEQUENTIAL",
 }
 
 // String returns the string representation of a token
@@ -495,4 +626,30 @@ func init() {
 	tokens[PACKED_DECIMAL_TYPE] = "PACKED-DECIMAL"
 	tokens[DISPLAY_1_TYPE] = "DISPLAY-1"
 	tokens[REPORT_HEADING] = "REPORT HEADING"
+
+	// Class conditions
+	tokens[CLASS_ALPHABETIC] = "CLASS-ALPHABETIC"
+	tokens[CLASS_ALPHANUMERIC] = "CLASS-ALPHANUMERIC"
+	tokens[CLASS_NUMERIC] = "CLASS-NUMERIC"
+	tokens[CLASS_BOOLEAN] = "CLASS-BOOLEAN"
+	tokens[CLASS_OBJECT] = "CLASS-OBJECT"
+	tokens[CLASS_REFERENCE] = "CLASS-REFERENCE"
+	tokens[CLASS_OBJECT_REFERENCE] = "CLASS-OBJECT-REFERENCE"
+	tokens[CLASS_ALPHANUMERIC_EDITED] = "CLASS-ALPHANUMERIC-EDITED"
+	tokens[CLASS_NUMERIC_EDITED] = "CLASS-NUMERIC-EDITED"
+	tokens[CLASS_DBCS] = "CLASS-DBCS"
+	tokens[CLASS_KANJI] = "CLASS-KANJI"
+	tokens[CLASS_NATIONAL_EDITED] = "CLASS-NATIONAL-EDITED"
+	tokens[CLASS_BOOLEAN_OBJECT] = "CLASS-BOOLEAN-OBJECT"
+	tokens[CLASS_BOOLEAN_REFERENCE] = "CLASS-BOOLEAN-REFERENCE"
+
+	// Usage tokens (starting at 2000)
+	tokens[USAGE_OBJECT] = "USAGE OBJECT"
+	tokens[USAGE_REFERENCE] = "USAGE REFERENCE"
+	tokens[USAGE_POINTER_64] = "USAGE POINTER-64"
+	tokens[USAGE_FUNCTION_POINTER] = "USAGE FUNCTION-POINTER"
+	tokens[USAGE_PROGRAM_POINTER] = "USAGE PROGRAM-POINTER"
+	tokens[USAGE_METHOD_POINTER] = "USAGE METHOD-POINTER"
+	tokens[USAGE_INDEX_64] = "USAGE INDEX-64"
+	tokens[USAGE_INDEX_32] = "USAGE INDEX-32"
 }

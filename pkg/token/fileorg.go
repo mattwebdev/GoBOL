@@ -34,6 +34,48 @@ var fileOrgInfos = map[Token]FileOrgInfo{
 		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file organization",
 	},
+	FILE_SHARING: {
+		Token:    FILE_SHARING,
+		Class:    CLASS_FILE,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+		Category: "file sharing",
+	},
+	FILE_LOCKING: {
+		Token:    FILE_LOCKING,
+		Class:    CLASS_FILE,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+		Category: "file locking",
+	},
+	FILE_RECORDING: {
+		Token:    FILE_RECORDING,
+		Class:    CLASS_FILE,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+		Category: "file recording",
+	},
+	FILE_ACCESS_MODE: {
+		Token:    FILE_ACCESS_MODE,
+		Class:    CLASS_FILE,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+		Category: "file access mode",
+	},
+	FILE_ORGANIZATION_INDEXED: {
+		Token:    FILE_ORGANIZATION_INDEXED,
+		Class:    CLASS_FILE,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+		Category: "file organization",
+	},
+	FILE_ORGANIZATION_RELATIVE: {
+		Token:    FILE_ORGANIZATION_RELATIVE,
+		Class:    CLASS_FILE,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+		Category: "file organization",
+	},
+	FILE_ORGANIZATION_SEQUENTIAL: {
+		Token:    FILE_ORGANIZATION_SEQUENTIAL,
+		Class:    CLASS_FILE,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+		Category: "file organization",
+	},
 }
 
 // IsFileOrg returns true if the token represents a file organization

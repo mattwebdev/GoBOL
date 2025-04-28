@@ -94,6 +94,30 @@ var screenInfos = map[Token]ScreenInfo{
 		Context:  []Token{SCREEN_SECTION},
 		Category: "required",
 	},
+	SCREEN_ATTRIBUTE: {
+		Token:    SCREEN_ATTRIBUTE,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{SCREEN_SECTION},
+		Category: "screen attribute",
+	},
+	SCREEN_COLOR: {
+		Token:    SCREEN_COLOR,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{SCREEN_SECTION},
+		Category: "screen color",
+	},
+	SCREEN_FOREGROUND: {
+		Token:    SCREEN_FOREGROUND,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{SCREEN_SECTION},
+		Category: "screen foreground",
+	},
+	SCREEN_BACKGROUND: {
+		Token:    SCREEN_BACKGROUND,
+		Class:    CLASS_KEYWORD,
+		Context:  []Token{SCREEN_SECTION},
+		Category: "screen background",
+	},
 }
 
 // IsScreen returns true if the token represents a screen token

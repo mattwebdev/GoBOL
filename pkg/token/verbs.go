@@ -49,6 +49,13 @@ const (
 	ALLOCATE
 	FREE
 	VALIDATE
+	// Object-oriented verbs
+	INVOKE
+	SET_ADDRESS
+	SET_POINTER
+	SET_PROCEDURE_POINTER
+	SET_FUNCTION_POINTER
+	SET_METHOD_POINTER
 )
 
 // VerbInfo contains information about a COBOL verb
@@ -261,6 +268,30 @@ var verbInfos = map[Token]VerbInfo{
 	VALIDATE: {
 		Token:    VALIDATE,
 		Category: "data validation",
+	},
+	INVOKE: {
+		Token:    INVOKE,
+		Category: "object-oriented",
+	},
+	SET_ADDRESS: {
+		Token:    SET_ADDRESS,
+		Category: "object-oriented",
+	},
+	SET_POINTER: {
+		Token:    SET_POINTER,
+		Category: "object-oriented",
+	},
+	SET_PROCEDURE_POINTER: {
+		Token:    SET_PROCEDURE_POINTER,
+		Category: "object-oriented",
+	},
+	SET_FUNCTION_POINTER: {
+		Token:    SET_FUNCTION_POINTER,
+		Category: "object-oriented",
+	},
+	SET_METHOD_POINTER: {
+		Token:    SET_METHOD_POINTER,
+		Category: "object-oriented",
 	},
 }
 
