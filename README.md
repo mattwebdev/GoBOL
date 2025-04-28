@@ -88,11 +88,6 @@ go test ./...  # Run all tests
 go test ./pkg/token/  # Test just the token package
 ```
 
-## 🔧 Development
-
-- [Token System Documentation](pkg/token/token.md) - How we make sense of COBOL
-- [Error Handling Guide](pkg/errors/errors.md) - Because errors should be helpful
-
 ## 🤝 Contributing
 
 Found a bug? Want to add a feature? Know what PROCEDURE DIVISION actually means? I'd love your help! Here's how:
