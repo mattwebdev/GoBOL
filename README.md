@@ -6,6 +6,13 @@
 
 Yes, you read that right. I'm building a COBOL compiler. In Go. In 2025. Why? Because someone has to maintain those 240 billion lines of COBOL running the world's financial systems, and they might as well do it with modern tools.
 
+## 📚 Documentation
+
+- [Command Line Interface](cmd/cmd.md) - How to boss around the compiler
+- [Token System](pkg/token/token.md) - The Rosetta Stone of our COBOL understanding
+- [Error Handling](pkg/errors/errors.md) - When things go wrong (and they will)
+- [Testing Strategy](tests/tests.md) - Proving it works (with science!)
+
 ## 🤔 What's This All About?
 
 GoBOL is my attempt at a modern COBOL compiler that targets the ISO/IEC 1989:2014 standard, because apparently, COBOL had a standard update more recently than you thought. I'm bringing the joy of modern development tools to the language that refuses to die.
@@ -49,7 +56,7 @@ GoBOL is my attempt at a modern COBOL compiler that targets the ISO/IEC 1989:201
 ├── pkg/
 │   ├── token/        # The Rosetta Stone of COBOL syntax (now with 100% more tokens!)
 │   └── errors/       # For when things go wrong (and they will)
-└── test/             # Proving it actually works (with real tests!)
+└── tests/            # Proving it actually works (with real tests!)
 ```
 
 ## 🛠️ Building
@@ -62,6 +69,8 @@ go build ./cmd/gobol
 
 ## 🚦 Usage
 
+Check out our [Command Line Guide](cmd/cmd.md) for the full story, but here's the TL;DR:
+
 ```bash
 gobol [options] input.cbl
 
@@ -71,12 +80,17 @@ gobol your-grandfathers-legacy-code.cbl
 
 ## 🧪 Testing
 
-We take testing seriously (unlike your bank's Y2K preparations):
+We take testing seriously (unlike your bank's Y2K preparations). Check out our [Testing Strategy](tests/tests.md) for the full details.
 
 ```bash
 go test ./...  # Run all tests
 go test ./pkg/token/  # Test just the token package
 ```
+
+## 🔧 Development
+
+- [Token System Documentation](pkg/token/token.md) - How we make sense of COBOL
+- [Error Handling Guide](pkg/errors/errors.md) - Because errors should be helpful
 
 ## 🤝 Contributing
 
@@ -87,6 +101,11 @@ Found a bug? Want to add a feature? Know what PROCEDURE DIVISION actually means?
 3. Code it
 4. Test it (yes, really, we have those now!)
 5. PR it
+
+Check our docs for detailed guidelines:
+- [Testing Guide](tests/tests.md)
+- [Error Handling](pkg/errors/errors.md)
+- [Token System](pkg/token/token.md)
 
 ## 📜 License
 
