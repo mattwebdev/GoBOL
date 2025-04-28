@@ -17,6 +17,56 @@ const (
 	STRING_LIT   // String literal token
 	NUMBER_LIT   // Number literal token
 	LEVEL_NUMBER // COBOL level number (01-49, 66, 77, 88)
+
+	// Data type tokens
+	BINARY_CHAR
+	BINARY_SHORT
+	BINARY_LONG
+	BINARY_DOUBLE
+	FLOAT_SHORT
+	FLOAT_LONG
+	FLOAT_EXTENDED
+	POINTER_32
+	PROCEDURE_POINTER
+	OBJECT
+	REFERENCE
+
+	// Additional scope terminators
+	END_START
+	END_DELETE
+	END_REWRITE
+	END_RETURN
+	END_INITIALIZE
+
+	// Additional condition keywords
+	ON_EXCEPTION
+	NOT_ON_EXCEPTION
+	ON_OVERFLOW
+	NOT_ON_OVERFLOW
+	ON_SIZE_ERROR
+	NOT_ON_SIZE_ERROR
+
+	// Additional file organization keywords
+	LINE_SEQUENTIAL
+	QUEUE
+	RELATIVE_KEY
+	RECORD_KEY
+
+	// Report Writer tokens (starting at 900)
+	INITIATE Token = iota + 900
+	TERMINATE
+	LINE_COUNTER
+	PAGE_COUNTER
+	NEXT_GROUP
+	NEXT_PAGE
+	DE
+	RH
+	PH
+	RF
+	PF
+	CH
+	CF
+	GROUP_INDICATE
 )
 
 // tokenStrings maps tokens to their string representations
@@ -69,6 +119,12 @@ var tokenStrings = map[Token]string{
 	CANCEL:       "CANCEL",
 	GOBACK:       "GOBACK",
 	EXIT_PROGRAM: "EXIT_PROGRAM",
+	// Additional verbs
+	RAISE:    "RAISE",
+	RESUME:   "RESUME",
+	ALLOCATE: "ALLOCATE",
+	FREE:     "FREE",
+	VALIDATE: "VALIDATE",
 	// Figurative constants
 	ZERO:        "ZERO",
 	ZEROS:       "ZEROS",
@@ -209,11 +265,45 @@ var tokenStrings = map[Token]string{
 	SIZE:             "SIZE",
 	ERROR:            "ERROR",
 	OVERFLOW:         "OVERFLOW",
-	// Report Writer tokens
+	// Report Writer tokens are now defined in report.go
+
+	// New data type tokens
+	BINARY_CHAR:       "BINARY-CHAR",
+	BINARY_SHORT:      "BINARY-SHORT",
+	BINARY_LONG:       "BINARY-LONG",
+	BINARY_DOUBLE:     "BINARY-DOUBLE",
+	FLOAT_SHORT:       "FLOAT-SHORT",
+	FLOAT_LONG:        "FLOAT-LONG",
+	FLOAT_EXTENDED:    "FLOAT-EXTENDED",
+	POINTER_32:        "POINTER-32",
+	PROCEDURE_POINTER: "PROCEDURE-POINTER",
+	OBJECT:            "OBJECT",
+	REFERENCE:         "REFERENCE",
+
+	// New scope terminators
+	END_START:      "END-START",
+	END_DELETE:     "END-DELETE",
+	END_REWRITE:    "END-REWRITE",
+	END_RETURN:     "END-RETURN",
+	END_INITIALIZE: "END-INITIALIZE",
+
+	// New condition keywords
+	ON_EXCEPTION:      "ON EXCEPTION",
+	NOT_ON_EXCEPTION:  "NOT ON EXCEPTION",
+	ON_OVERFLOW:       "ON OVERFLOW",
+	NOT_ON_OVERFLOW:   "NOT ON OVERFLOW",
+	ON_SIZE_ERROR:     "ON SIZE ERROR",
+	NOT_ON_SIZE_ERROR: "NOT ON SIZE ERROR",
+
+	// New file organization keywords
+	LINE_SEQUENTIAL: "LINE SEQUENTIAL",
+	QUEUE:           "QUEUE",
+	RELATIVE_KEY:    "RELATIVE KEY",
+	RECORD_KEY:      "RECORD KEY",
+
+	// Report Writer tokens (starting at 900)
 	INITIATE:       "INITIATE",
 	TERMINATE:      "TERMINATE",
-	TYPE:           "TYPE",
-	GROUP:          "GROUP",
 	LINE_COUNTER:   "LINE-COUNTER",
 	PAGE_COUNTER:   "PAGE-COUNTER",
 	NEXT_GROUP:     "NEXT GROUP",
@@ -225,7 +315,6 @@ var tokenStrings = map[Token]string{
 	PF:             "PF",
 	CH:             "CH",
 	CF:             "CF",
-	SOURCE:         "SOURCE",
 	GROUP_INDICATE: "GROUP INDICATE",
 }
 

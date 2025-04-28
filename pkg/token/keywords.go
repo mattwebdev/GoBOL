@@ -172,25 +172,6 @@ const (
 	NATIONAL    // For national character usage
 	INVALID_KEY // For file handling conditions
 	AT_END      // For file handling conditions
-
-	// Report Writer keywords
-	INITIATE       // Start report processing
-	TERMINATE      // End report processing
-	TYPE           // Report group type
-	GROUP          // Report group
-	LINE_COUNTER   // Special register for line counting
-	PAGE_COUNTER   // Special register for page counting
-	NEXT_GROUP     // Controls spacing between groups
-	NEXT_PAGE      // Force new page
-	DE             // Detail group
-	RH             // Report heading
-	PH             // Page heading
-	RF             // Report footing
-	PF             // Page footing
-	CH             // Control heading
-	CF             // Control footing
-	SOURCE         // Source for report item
-	GROUP_INDICATE // Print only on first detail
 )
 
 // KeywordInfo contains information about a keyword
@@ -203,255 +184,274 @@ type KeywordInfo struct {
 }
 
 // Define keyword information
-var keywordInfo = map[Token]KeywordInfo{
+var keywordInfos = map[Token]KeywordInfo{
 	CORRESPONDING: {
 		Token:    CORRESPONDING,
 		Class:    CLASS_MODIFIER,
 		Aliases:  []string{"CORR"},
-		Context:  []Token{MOVE, ADD, SUBTRACT},
+		Context:  []Token{GREATER, LESS, EQUAL, EQUALS},
 		Category: "modifier",
 	},
 	TO: {
 		Token:    TO,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{MOVE, ADD, SUBTRACT},
+		Context:  []Token{GO, FROM, WHEN, AFTER, BEFORE},
 		Category: "destination",
 	},
 	GIVING: {
 		Token:    GIVING,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{ADD, SUBTRACT, MULTIPLY, DIVIDE},
+		Context:  []Token{GO},
 		Category: "destination",
 	},
 	GREATER: {
 		Token:    GREATER,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{TO, THAN},
 		Category: "comparison",
 	},
 	THAN: {
 		Token:    THAN,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{GREATER, LESS},
+		Context:  []Token{TO, GREATER},
 		Category: "comparison",
 	},
 	COMPUTATIONAL: {
 		Token:    COMPUTATIONAL,
 		Class:    CLASS_KEYWORD,
 		Aliases:  []string{"COMP"},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "usage",
 	},
 	COMP: {
 		Token:    COMP,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{COMPUTATIONAL},
 		Category: "usage",
 	},
 	COMP_1: {
 		Token:    COMP_1,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{COMPUTATIONAL},
 		Category: "usage",
 	},
 	COMP_2: {
 		Token:    COMP_2,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{COMPUTATIONAL},
 		Category: "usage",
 	},
 	COMP_3: {
 		Token:    COMP_3,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{COMPUTATIONAL},
 		Category: "usage",
 	},
 	COMP_4: {
 		Token:    COMP_4,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{COMPUTATIONAL},
 		Category: "usage",
 	},
 	COMP_5: {
 		Token:    COMP_5,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{COMPUTATIONAL},
 		Category: "usage",
 	},
 	BINARY: {
 		Token:    BINARY,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{COMPUTATIONAL},
 		Category: "usage",
 	},
 	SYNCHRONIZED: {
 		Token:    SYNCHRONIZED,
 		Class:    CLASS_KEYWORD,
 		Aliases:  []string{"SYNC"},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "alignment",
 	},
 	SYNC: {
 		Token:    SYNC,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{SYNCHRONIZED},
 		Category: "alignment",
 	},
 	JUSTIFIED: {
 		Token:    JUSTIFIED,
 		Class:    CLASS_KEYWORD,
 		Aliases:  []string{"JUST"},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "alignment",
 	},
 	JUST: {
 		Token:    JUST,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{JUSTIFIED},
 		Category: "alignment",
 	},
 	BLANK: {
 		Token:    BLANK,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	RENAMES: {
 		Token:    RENAMES,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	REDEFINES: {
 		Token:    REDEFINES,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	FILLER: {
 		Token:    FILLER,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	THROUGH: {
 		Token:    THROUGH,
 		Class:    CLASS_KEYWORD,
 		Aliases:  []string{"THRU"},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "range",
 	},
 	THRU: {
 		Token:    THRU,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{THROUGH},
 		Category: "range",
 	},
 	WHEN: {
 		Token:    WHEN,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{EVALUATE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "control",
 	},
 	AFTER: {
 		Token:    AFTER,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{USE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "position",
 	},
 	BEFORE: {
 		Token:    BEFORE,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{USE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "position",
 	},
 	STANDARD: {
 		Token:    STANDARD,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{USE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "qualifier",
 	},
 	BASED: {
 		Token:    BASED,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{ALLOCATE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "memory",
 	},
 	END_IF: {
 		Token:    END_IF,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{IF},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_READ: {
 		Token:    END_READ,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{READ},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_WRITE: {
 		Token:    END_WRITE,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{WRITE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_PERFORM: {
 		Token:    END_PERFORM,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{PERFORM},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_EVALUATE: {
 		Token:    END_EVALUATE,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{EVALUATE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_SEARCH: {
 		Token:    END_SEARCH,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{SEARCH},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_COMPUTE: {
 		Token:    END_COMPUTE,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{COMPUTE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_ADD: {
 		Token:    END_ADD,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{ADD},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_SUBTRACT: {
 		Token:    END_SUBTRACT,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{SUBTRACT},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_MULTIPLY: {
 		Token:    END_MULTIPLY,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{MULTIPLY},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_DIVIDE: {
 		Token:    END_DIVIDE,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{DIVIDE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_STRING: {
 		Token:    END_STRING,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{STRING_VERB},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_UNSTRING: {
 		Token:    END_UNSTRING,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{UNSTRING},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_CALL: {
 		Token:    END_CALL,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{CALL},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_ACCEPT: {
 		Token:    END_ACCEPT,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{ACCEPT},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 	END_DISPLAY: {
 		Token:    END_DISPLAY,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{DISPLAY},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "scope_terminator",
 	},
 
@@ -459,7 +459,7 @@ var keywordInfo = map[Token]KeywordInfo{
 	ORGANIZATION: {
 		Token:    ORGANIZATION,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{FILE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	SEQUENTIAL: {
@@ -477,7 +477,7 @@ var keywordInfo = map[Token]KeywordInfo{
 	ACCESS: {
 		Token:    ACCESS,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{FILE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	RANDOM: {
@@ -495,17 +495,19 @@ var keywordInfo = map[Token]KeywordInfo{
 	FILE: {
 		Token:    FILE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file",
 	},
 	STATUS: {
 		Token:    STATUS,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{FILE},
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	RECORD: {
 		Token:    RECORD,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	KEY: {
@@ -535,6 +537,7 @@ var keywordInfo = map[Token]KeywordInfo{
 	CONTAINS: {
 		Token:    CONTAINS,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	RECORDING: {
@@ -546,6 +549,7 @@ var keywordInfo = map[Token]KeywordInfo{
 	MODE: {
 		Token:    MODE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 
@@ -553,151 +557,181 @@ var keywordInfo = map[Token]KeywordInfo{
 	LINE: {
 		Token:    LINE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	ADVANCING: {
 		Token:    ADVANCING,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	OPTIONAL: {
 		Token:    OPTIONAL,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	LINAGE: {
 		Token:    LINAGE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	FOOTING: {
 		Token:    FOOTING,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	TOP: {
 		Token:    TOP,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	BOTTOM: {
 		Token:    BOTTOM,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	PADDING: {
 		Token:    PADDING,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	CHARACTER: {
 		Token:    CHARACTER,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	DATA_RECORD: {
 		Token:    DATA_RECORD,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "record_description",
 	},
 	CODE_SET: {
 		Token:    CODE_SET,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_description",
 	},
 	SHARING: {
 		Token:    SHARING,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_sharing",
 	},
 	WITH: {
 		Token:    WITH,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_sharing",
 	},
 	NO: {
 		Token:    NO,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_sharing",
 	},
 	OTHER: {
 		Token:    OTHER,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_sharing",
 	},
 	LOCK: {
 		Token:    LOCK,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_sharing",
 	},
 	AUTOMATIC: {
 		Token:    AUTOMATIC,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_sharing",
 	},
 	MANUAL: {
 		Token:    MANUAL,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_sharing",
 	},
 	EXCLUSIVE: {
 		Token:    EXCLUSIVE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_sharing",
 	},
 	RETRY: {
 		Token:    RETRY,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "file_sharing",
 	},
 	REPORT: {
 		Token:    REPORT,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "report_writer",
 	},
 	PAGE: {
 		Token:    PAGE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "report_writer",
 	},
 	HEADING: {
 		Token:    HEADING,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{REPORT},
 		Category: "report_writer",
 	},
 	FIRST: {
 		Token:    FIRST,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{REPORT},
 		Category: "report_writer",
 	},
 	LAST: {
 		Token:    LAST,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{REPORT},
 		Category: "report_writer",
 	},
 	DETAIL: {
 		Token:    DETAIL,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{REPORT},
 		Category: "report_writer",
 	},
 	CONTROL: {
 		Token:    CONTROL,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{REPORT},
 		Category: "report_writer",
 	},
 	FINAL: {
 		Token:    FINAL,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{REPORT},
 		Category: "report_writer",
 	},
 	SUM: {
 		Token:    SUM,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{REPORT},
 		Category: "report_writer",
 	},
 	RESET: {
 		Token:    RESET,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{REPORT},
 		Category: "report_writer",
 	},
 
@@ -705,192 +739,210 @@ var keywordInfo = map[Token]KeywordInfo{
 	SIGN: {
 		Token:    SIGN,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	SEPARATE: {
 		Token:    SEPARATE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	PACKED_DECIMAL: {
 		Token:    PACKED_DECIMAL,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	DISPLAY_1: {
 		Token:    DISPLAY_1,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	GLOBAL: {
 		Token:    GLOBAL,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	EXTERNAL: {
 		Token:    EXTERNAL,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "data_description",
 	},
 	NUMERIC: {
 		Token:    NUMERIC,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "condition",
 	},
 	ALPHABETIC: {
 		Token:    ALPHABETIC,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "condition",
 	},
 	ALPHABETIC_LOWER: {
 		Token:    ALPHABETIC_LOWER,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "condition",
 	},
 	ALPHABETIC_UPPER: {
 		Token:    ALPHABETIC_UPPER,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "condition",
 	},
 	CLASS: {
 		Token:    CLASS,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "condition",
 	},
 	POSITIVE: {
 		Token:    POSITIVE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "condition",
 	},
 	NEGATIVE: {
 		Token:    NEGATIVE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "condition",
 	},
 	DECIMAL_POINT: {
 		Token:    DECIMAL_POINT,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "environment",
 	},
 	CURRENCY: {
 		Token:    CURRENCY,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "environment",
 	},
 	CONSOLE: {
 		Token:    CONSOLE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "environment",
 	},
 	PRINTER: {
 		Token:    PRINTER,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "environment",
 	},
 	SYSIN: {
 		Token:    SYSIN,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "environment",
 	},
 	SYSOUT: {
 		Token:    SYSOUT,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "environment",
 	},
 	USING: {
 		Token:    USING,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "procedure",
 	},
 	RETURNING: {
 		Token:    RETURNING,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "procedure",
 	},
 	RAISING: {
 		Token:    RAISING,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "procedure",
 	},
 	EXCEPTION: {
 		Token:    EXCEPTION,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "condition",
 	},
 	SIZE: {
 		Token:    SIZE,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "procedure",
 	},
 	ERROR: {
 		Token:    ERROR,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "procedure",
 	},
 	OVERFLOW: {
 		Token:    OVERFLOW,
 		Class:    CLASS_KEYWORD,
-		Category: "procedure",
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+		Category: "condition",
 	},
 	UNDERFLOW: {
 		Token:    UNDERFLOW,
 		Class:    CLASS_KEYWORD,
-		Category: "procedure",
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
+		Category: "condition",
 	},
 	REMAINDER: {
 		Token:    REMAINDER,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{DIVIDE},
+		Context:  []Token{END_DIVIDE},
 		Category: "arithmetic",
 	},
 	POINTER: {
 		Token:    POINTER,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "usage",
 	},
 	INDEX: {
 		Token:    INDEX,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "usage",
 	},
 	NATIONAL: {
 		Token:    NATIONAL,
 		Class:    CLASS_KEYWORD,
+		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
 		Category: "usage",
 	},
 	INVALID_KEY: {
 		Token:    INVALID_KEY,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{READ, WRITE, START, DELETE},
+		Context:  []Token{END_READ, END_WRITE, START, DELETE},
 		Category: "condition",
 	},
 	AT_END: {
 		Token:    AT_END,
 		Class:    CLASS_KEYWORD,
-		Context:  []Token{READ},
+		Context:  []Token{END_READ},
 		Category: "condition",
 	},
 
-	// Report Writer keyword info
+	// Report Writer tokens
 	INITIATE: {
 		Token:    INITIATE,
 		Class:    CLASS_KEYWORD,
 		Category: "report",
-		Context:  []Token{REPORT},
 	},
 	TERMINATE: {
 		Token:    TERMINATE,
-		Class:    CLASS_KEYWORD,
-		Category: "report",
-		Context:  []Token{REPORT},
-	},
-	TYPE: {
-		Token:    TYPE,
-		Class:    CLASS_KEYWORD,
-		Category: "report",
-	},
-	GROUP: {
-		Token:    GROUP,
 		Class:    CLASS_KEYWORD,
 		Category: "report",
 	},
@@ -949,11 +1001,6 @@ var keywordInfo = map[Token]KeywordInfo{
 		Class:    CLASS_KEYWORD,
 		Category: "report",
 	},
-	SOURCE: {
-		Token:    SOURCE,
-		Class:    CLASS_KEYWORD,
-		Category: "report",
-	},
 	GROUP_INDICATE: {
 		Token:    GROUP_INDICATE,
 		Class:    CLASS_KEYWORD,
@@ -963,13 +1010,13 @@ var keywordInfo = map[Token]KeywordInfo{
 
 // IsKeyword checks if a token is a keyword
 func IsKeyword(t Token) bool {
-	_, ok := keywordInfo[t]
+	_, ok := keywordInfos[t]
 	return ok
 }
 
 // GetKeywordInfo returns information about a keyword
 func GetKeywordInfo(t Token) (KeywordInfo, bool) {
-	info, ok := keywordInfo[t]
+	info, ok := keywordInfos[t]
 	return info, ok
 }
 

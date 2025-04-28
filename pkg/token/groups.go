@@ -1,21 +1,5 @@
 package token
 
-// TokenClass represents the classification of a token
-type TokenClass int
-
-const (
-	CLASS_UNKNOWN    TokenClass = iota
-	CLASS_VERB                  // Primary COBOL verbs (MOVE, ADD, etc)
-	CLASS_KEYWORD               // Secondary keywords (TO, FROM, etc)
-	CLASS_MODIFIER              // Modifiers (CORRESPONDING, etc)
-	CLASS_IDENTIFIER            // User-defined names
-	CLASS_LITERAL               // Constants and literals
-	CLASS_OPERATOR              // Mathematical and logical operators
-	CLASS_SEPARATOR             // Dots, commas, etc
-	CLASS_DIVISION              // Division headers
-	CLASS_SECTION               // Section headers
-)
-
 // TokenGroup represents a logical grouping of tokens that form a complete COBOL command
 type TokenGroup struct {
 	MainToken   TokenInfo   // The primary verb or command

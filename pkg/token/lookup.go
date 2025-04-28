@@ -13,21 +13,13 @@ func init() {
 	tokenMap = make(map[string]Token)
 
 	// Add verbs
-	for verb, info := range verbPatterns {
+	for verb := range verbInfos {
 		// Add the base verb token
 		tokenMap[tokenStrings[verb]] = verb
-		// Add any pattern parts
-		for _, pattern := range info.Patterns {
-			for _, part := range pattern.Parts {
-				if part != IDENTIFIER && part != STRING_LIT && part != NUMBER_LIT {
-					tokenMap[tokenStrings[part]] = part
-				}
-			}
-		}
 	}
 
 	// Add keywords
-	for kw, info := range keywordInfo {
+	for kw, info := range keywordInfos {
 		tokenMap[tokenStrings[kw]] = kw
 		// Add aliases
 		for _, alias := range info.Aliases {
@@ -70,6 +62,31 @@ func init() {
 				tokenMap[hyphenated] = fc
 			}
 		}
+	}
+
+	// Add report writer tokens
+	for tok := range reportInfos {
+		tokenMap[tokenStrings[tok]] = tok
+	}
+
+	// Add data type tokens
+	for tok := range dataTypeInfos {
+		tokenMap[tokenStrings[tok]] = tok
+	}
+
+	// Add scope tokens
+	for tok := range scopeInfos {
+		tokenMap[tokenStrings[tok]] = tok
+	}
+
+	// Add condition tokens
+	for tok := range conditionInfos {
+		tokenMap[tokenStrings[tok]] = tok
+	}
+
+	// Add file organization tokens
+	for tok := range fileOrgInfos {
+		tokenMap[tokenStrings[tok]] = tok
 	}
 }
 

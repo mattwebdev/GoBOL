@@ -1,17 +1,15 @@
 package token
 
-// COBOL verb tokens start at 700
+// Verb tokens start at 100 to avoid collision with special tokens
 const (
-	// Data manipulation verbs
-	MOVE Token = iota + 700
+	// Basic verbs
+	MOVE Token = iota + 100
 	ADD
 	SUBTRACT
 	MULTIPLY
 	DIVIDE
 	COMPUTE
 	INITIALIZE
-
-	// I/O verbs
 	ACCEPT
 	DISPLAY
 	READ
@@ -23,8 +21,6 @@ const (
 	CLOSE
 	RELEASE
 	RETURN
-
-	// Control flow verbs
 	PERFORM
 	GO_TO
 	IF
@@ -34,260 +30,256 @@ const (
 	STOP
 	ALTER
 	USE
-	RAISE  // Exception handling
-	RESUME // Exception handling
-
-	// String manipulation verbs
-	STRING_VERB // Renamed to avoid conflict with STRING_LIT
+	STRING_VERB
 	UNSTRING
 	INSPECT
-
-	// Table handling verbs
 	SEARCH
 	SET
 	SORT
 	MERGE
-
-	// Memory management verbs
-	ALLOCATE
-	FREE
-
-	// Data validation verbs
-	VALIDATE
-
-	// Report Writer verbs
 	GENERATE
 	SUPPRESS
-
-	// Program linkage verbs
 	CALL
 	CANCEL
 	GOBACK
 	EXIT_PROGRAM
+	// Additional verbs
+	RAISE
+	RESUME
+	ALLOCATE
+	FREE
+	VALIDATE
 )
 
-// VerbInfo contains information about a COBOL verb's syntax
+// VerbInfo contains information about a COBOL verb
 type VerbInfo struct {
 	Token       Token
-	Class       TokenClass
-	MinParams   int
-	MaxParams   int
-	Terminators []Token
-	Modifiers   []Token
-	Patterns    []MultiWordPattern // Possible multi-word patterns for this verb
+	Category    string  // The verb category (arithmetic, i/o, control flow, etc)
+	EndToken    Token   // The corresponding END-* token if applicable
+	Terminators []Token // Valid statement terminators
 }
 
-// Define verb patterns
-var verbPatterns = map[Token]VerbInfo{
+// Define verb information
+var verbInfos = map[Token]VerbInfo{
 	MOVE: {
-		Token:       MOVE,
-		Class:       CLASS_VERB,
-		MinParams:   2,
-		MaxParams:   2,
-		Terminators: []Token{OP_PERIOD},
-		Modifiers:   []Token{CORRESPONDING, TO},
-		Patterns: []MultiWordPattern{
-			{
-				Parts:    []Token{MOVE, CORRESPONDING, TO},
-				Result:   MOVE,
-				Optional: []bool{false, false, false},
-			},
-			{
-				Parts:    []Token{MOVE, CORR, TO},
-				Result:   MOVE,
-				Optional: []bool{false, false, false},
-			},
-		},
+		Token:    MOVE,
+		Category: "data movement",
 	},
 	ADD: {
-		Token:       ADD,
-		Class:       CLASS_VERB,
-		MinParams:   2,
-		MaxParams:   -1, // -1 means unlimited
-		Terminators: []Token{OP_PERIOD},
-		Modifiers:   []Token{TO, GIVING},
-		Patterns: []MultiWordPattern{
-			{
-				Parts:    []Token{ADD, TO},
-				Result:   ADD,
-				Optional: []bool{false, false},
-			},
-			{
-				Parts:    []Token{ADD, GIVING},
-				Result:   ADD,
-				Optional: []bool{false, false},
-			},
-		},
+		Token:    ADD,
+		Category: "arithmetic",
+		EndToken: END_ADD,
 	},
-	PERFORM: {
-		Token:       PERFORM,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   -1,
-		Terminators: []Token{OP_PERIOD},
-		Modifiers:   []Token{TIMES, UNTIL, VARYING},
-		Patterns: []MultiWordPattern{
-			{
-				Parts:    []Token{PERFORM, TIMES},
-				Result:   PERFORM,
-				Optional: []bool{false, false},
-			},
-			{
-				Parts:    []Token{PERFORM, UNTIL},
-				Result:   PERFORM,
-				Optional: []bool{false, false},
-			},
-			{
-				Parts:    []Token{PERFORM, VARYING},
-				Result:   PERFORM,
-				Optional: []bool{false, false},
-			},
-		},
+	SUBTRACT: {
+		Token:    SUBTRACT,
+		Category: "arithmetic",
+		EndToken: END_SUBTRACT,
+	},
+	MULTIPLY: {
+		Token:    MULTIPLY,
+		Category: "arithmetic",
+		EndToken: END_MULTIPLY,
+	},
+	DIVIDE: {
+		Token:    DIVIDE,
+		Category: "arithmetic",
+		EndToken: END_DIVIDE,
+	},
+	COMPUTE: {
+		Token:    COMPUTE,
+		Category: "arithmetic",
+		EndToken: END_COMPUTE,
 	},
 	INITIALIZE: {
-		Token:       INITIALIZE,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   -1,
-		Terminators: []Token{OP_PERIOD},
-		Modifiers:   []Token{TO, VALUE},
-		Patterns: []MultiWordPattern{
-			{
-				Parts:    []Token{INITIALIZE, TO, VALUE},
-				Result:   INITIALIZE,
-				Optional: []bool{false, false, false},
-			},
-		},
+		Token:    INITIALIZE,
+		Category: "data movement",
+		EndToken: END_INITIALIZE,
 	},
-	USE: {
-		Token:       USE,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   -1,
-		Terminators: []Token{OP_PERIOD},
-		Patterns: []MultiWordPattern{
-			{
-				Parts:    []Token{USE, AFTER, STANDARD},
-				Result:   USE,
-				Optional: []bool{false, false, false},
-			},
-			{
-				Parts:    []Token{USE, BEFORE, STANDARD},
-				Result:   USE,
-				Optional: []bool{false, false, false},
-			},
-		},
+	ACCEPT: {
+		Token:    ACCEPT,
+		Category: "i/o",
+		EndToken: END_ACCEPT,
+	},
+	DISPLAY: {
+		Token:    DISPLAY,
+		Category: "i/o",
+		EndToken: END_DISPLAY,
+	},
+	READ: {
+		Token:    READ,
+		Category: "i/o",
+		EndToken: END_READ,
+	},
+	WRITE: {
+		Token:    WRITE,
+		Category: "i/o",
+		EndToken: END_WRITE,
+	},
+	REWRITE: {
+		Token:    REWRITE,
+		Category: "i/o",
+		EndToken: END_REWRITE,
+	},
+	DELETE: {
+		Token:    DELETE,
+		Category: "i/o",
+		EndToken: END_DELETE,
+	},
+	START: {
+		Token:    START,
+		Category: "i/o",
+		EndToken: END_START,
+	},
+	OPEN: {
+		Token:    OPEN,
+		Category: "i/o",
+	},
+	CLOSE: {
+		Token:    CLOSE,
+		Category: "i/o",
 	},
 	RELEASE: {
-		Token:       RELEASE,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   1,
-		Terminators: []Token{OP_PERIOD},
-		Patterns: []MultiWordPattern{
-			{
-				Parts:    []Token{RELEASE, FROM},
-				Result:   RELEASE,
-				Optional: []bool{false, true},
-			},
-		},
+		Token:    RELEASE,
+		Category: "i/o",
 	},
 	RETURN: {
-		Token:       RETURN,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   1,
-		Terminators: []Token{OP_PERIOD},
+		Token:    RETURN,
+		Category: "i/o",
+		EndToken: END_RETURN,
+	},
+	PERFORM: {
+		Token:    PERFORM,
+		Category: "control flow",
+		EndToken: END_PERFORM,
+	},
+	GO_TO: {
+		Token:    GO_TO,
+		Category: "control flow",
+	},
+	IF: {
+		Token:    IF,
+		Category: "control flow",
+		EndToken: END_IF,
+	},
+	EVALUATE: {
+		Token:    EVALUATE,
+		Category: "control flow",
+		EndToken: END_EVALUATE,
+	},
+	CONTINUE: {
+		Token:    CONTINUE,
+		Category: "control flow",
+	},
+	EXIT: {
+		Token:    EXIT,
+		Category: "control flow",
+	},
+	STOP: {
+		Token:    STOP,
+		Category: "control flow",
 	},
 	ALTER: {
-		Token:       ALTER,
-		Class:       CLASS_VERB,
-		MinParams:   2,
-		MaxParams:   2,
-		Terminators: []Token{OP_PERIOD},
-		Patterns: []MultiWordPattern{
-			{
-				Parts:    []Token{ALTER, TO},
-				Result:   ALTER,
-				Optional: []bool{false, false},
-			},
-		},
+		Token:    ALTER,
+		Category: "control flow",
+	},
+	USE: {
+		Token:    USE,
+		Category: "procedure",
+	},
+	STRING_VERB: {
+		Token:    STRING_VERB,
+		Category: "string handling",
+		EndToken: END_STRING,
+	},
+	UNSTRING: {
+		Token:    UNSTRING,
+		Category: "string handling",
+		EndToken: END_UNSTRING,
+	},
+	INSPECT: {
+		Token:    INSPECT,
+		Category: "string handling",
+	},
+	SEARCH: {
+		Token:    SEARCH,
+		Category: "table handling",
+		EndToken: END_SEARCH,
+	},
+	SET: {
+		Token:    SET,
+		Category: "data movement",
+	},
+	SORT: {
+		Token:    SORT,
+		Category: "table handling",
+	},
+	MERGE: {
+		Token:    MERGE,
+		Category: "table handling",
 	},
 	GENERATE: {
-		Token:       GENERATE,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   1,
-		Terminators: []Token{OP_PERIOD},
+		Token:    GENERATE,
+		Category: "report writer",
 	},
 	SUPPRESS: {
-		Token:       SUPPRESS,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   1,
-		Terminators: []Token{OP_PERIOD},
+		Token:    SUPPRESS,
+		Category: "report writer",
+	},
+	CALL: {
+		Token:    CALL,
+		Category: "procedure",
+		EndToken: END_CALL,
+	},
+	CANCEL: {
+		Token:    CANCEL,
+		Category: "procedure",
+	},
+	GOBACK: {
+		Token:    GOBACK,
+		Category: "procedure",
+	},
+	EXIT_PROGRAM: {
+		Token:    EXIT_PROGRAM,
+		Category: "procedure",
 	},
 	RAISE: {
-		Token:       RAISE,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   1,
-		Terminators: []Token{OP_PERIOD},
+		Token:    RAISE,
+		Category: "exception handling",
 	},
 	RESUME: {
-		Token:       RESUME,
-		Class:       CLASS_VERB,
-		MinParams:   0,
-		MaxParams:   1,
-		Terminators: []Token{OP_PERIOD},
+		Token:    RESUME,
+		Category: "exception handling",
 	},
 	ALLOCATE: {
-		Token:       ALLOCATE,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   -1,
-		Terminators: []Token{OP_PERIOD},
-		Patterns: []MultiWordPattern{
-			{
-				Parts:    []Token{ALLOCATE, BASED},
-				Result:   ALLOCATE,
-				Optional: []bool{false, true},
-			},
-		},
+		Token:    ALLOCATE,
+		Category: "memory management",
 	},
 	FREE: {
-		Token:       FREE,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   -1,
-		Terminators: []Token{OP_PERIOD},
+		Token:    FREE,
+		Category: "memory management",
 	},
 	VALIDATE: {
-		Token:       VALIDATE,
-		Class:       CLASS_VERB,
-		MinParams:   1,
-		MaxParams:   -1,
-		Terminators: []Token{OP_PERIOD},
+		Token:    VALIDATE,
+		Category: "data validation",
 	},
-	// Add more verb patterns as needed...
 }
 
 // IsVerb checks if a token is a COBOL verb
 func IsVerb(t Token) bool {
-	_, ok := verbPatterns[t]
+	_, ok := verbInfos[t]
 	return ok
 }
 
-// GetVerbInfo returns information about a verb's syntax
+// GetVerbInfo returns information about a verb token
 func GetVerbInfo(t Token) (VerbInfo, bool) {
-	info, ok := verbPatterns[t]
+	info, ok := verbInfos[t]
 	return info, ok
 }
 
-// GetVerbPatterns returns all multi-word patterns for a verb
-func GetVerbPatterns(t Token) []MultiWordPattern {
-	if info, ok := verbPatterns[t]; ok {
-		return info.Patterns
+// GetVerbCategory returns the category of a verb token
+func GetVerbCategory(t Token) string {
+	if info, ok := verbInfos[t]; ok {
+		return info.Category
 	}
-	return nil
+	return ""
 }
