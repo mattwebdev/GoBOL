@@ -890,13 +890,13 @@ var keywordInfos = map[Token]KeywordInfo{
 		Token:    OVERFLOW,
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
-		Category: "condition",
+		Category: "procedure",
 	},
 	UNDERFLOW: {
 		Token:    UNDERFLOW,
 		Class:    CLASS_KEYWORD,
 		Context:  []Token{GO, TO, FROM, WHEN, AFTER, BEFORE, STANDARD, BASED},
-		Category: "condition",
+		Category: "procedure",
 	},
 	REMAINDER: {
 		Token:    REMAINDER,
