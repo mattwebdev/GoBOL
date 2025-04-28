@@ -20,6 +20,10 @@ func TestDatatypeTokenValues(t *testing.T) {
 		{POINTER_32, "POINTER-32"},
 		{PROCEDURE_POINTER, "PROCEDURE-POINTER"},
 		{OBJECT, "OBJECT"},
+		{REFERENCE, "REFERENCE"},
+		{NATIONAL_TYPE, "NATIONAL"},
+		{PACKED_DECIMAL_TYPE, "PACKED-DECIMAL"},
+		{DISPLAY_1_TYPE, "DISPLAY-1"},
 	}
 
 	// Test that all datatype tokens are unique
@@ -55,6 +59,10 @@ func TestIsDataType(t *testing.T) {
 		{"POINTER_32 is datatype", POINTER_32, true},
 		{"PROCEDURE_POINTER is datatype", PROCEDURE_POINTER, true},
 		{"OBJECT is datatype", OBJECT, true},
+		{"REFERENCE is datatype", REFERENCE, true},
+		{"NATIONAL_TYPE is datatype", NATIONAL_TYPE, true},
+		{"PACKED_DECIMAL_TYPE is datatype", PACKED_DECIMAL_TYPE, true},
+		{"DISPLAY_1_TYPE is datatype", DISPLAY_1_TYPE, true},
 		{"MOVE is not datatype", MOVE, false},
 		{"ADD is not datatype", ADD, false},
 		{"ILLEGAL is not datatype", ILLEGAL, false},
@@ -119,6 +127,38 @@ func TestGetDataTypeInfo(t *testing.T) {
 			wantOk:       true,
 		},
 		{
+			name:         "REFERENCE info",
+			token:        REFERENCE,
+			wantClass:    "object",
+			wantCategory: "reference",
+			wantUsage:    "REFERENCE",
+			wantOk:       true,
+		},
+		{
+			name:         "NATIONAL_TYPE info",
+			token:        NATIONAL_TYPE,
+			wantClass:    "national",
+			wantCategory: "character",
+			wantUsage:    "NATIONAL",
+			wantOk:       true,
+		},
+		{
+			name:         "PACKED_DECIMAL_TYPE info",
+			token:        PACKED_DECIMAL_TYPE,
+			wantClass:    "numeric",
+			wantCategory: "packed-decimal",
+			wantUsage:    "PACKED-DECIMAL",
+			wantOk:       true,
+		},
+		{
+			name:         "DISPLAY_1_TYPE info",
+			token:        DISPLAY_1_TYPE,
+			wantClass:    "alphanumeric",
+			wantCategory: "display",
+			wantUsage:    "DISPLAY-1",
+			wantOk:       true,
+		},
+		{
 			name:   "MOVE has no datatype info",
 			token:  MOVE,
 			wantOk: false,
@@ -157,6 +197,10 @@ func TestGetDataTypeCategory(t *testing.T) {
 		{"POINTER_32 category", POINTER_32, "pointer"},
 		{"PROCEDURE_POINTER category", PROCEDURE_POINTER, "procedure-pointer"},
 		{"OBJECT category", OBJECT, "object"},
+		{"REFERENCE category", REFERENCE, "reference"},
+		{"NATIONAL_TYPE category", NATIONAL_TYPE, "character"},
+		{"PACKED_DECIMAL_TYPE category", PACKED_DECIMAL_TYPE, "packed-decimal"},
+		{"DISPLAY_1_TYPE category", DISPLAY_1_TYPE, "display"},
 		{"MOVE has no category", MOVE, ""},
 	}
 
@@ -180,6 +224,10 @@ func TestGetDataTypeUsage(t *testing.T) {
 		{"POINTER_32 usage", POINTER_32, "POINTER-32"},
 		{"PROCEDURE_POINTER usage", PROCEDURE_POINTER, "PROCEDURE-POINTER"},
 		{"OBJECT usage", OBJECT, "OBJECT"},
+		{"REFERENCE usage", REFERENCE, "REFERENCE"},
+		{"NATIONAL_TYPE usage", NATIONAL_TYPE, "NATIONAL"},
+		{"PACKED_DECIMAL_TYPE usage", PACKED_DECIMAL_TYPE, "PACKED-DECIMAL"},
+		{"DISPLAY_1_TYPE usage", DISPLAY_1_TYPE, "DISPLAY-1"},
 		{"MOVE has no usage", MOVE, ""},
 	}
 

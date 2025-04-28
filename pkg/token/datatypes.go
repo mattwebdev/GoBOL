@@ -71,6 +71,30 @@ var dataTypeInfos = map[Token]DataTypeInfo{
 		Category: "object",
 		Usage:    "OBJECT",
 	},
+	REFERENCE: {
+		Token:    REFERENCE,
+		Class:    "object",
+		Category: "reference",
+		Usage:    "REFERENCE",
+	},
+	NATIONAL_TYPE: {
+		Token:    NATIONAL_TYPE,
+		Class:    "national",
+		Category: "character",
+		Usage:    "NATIONAL",
+	},
+	PACKED_DECIMAL_TYPE: {
+		Token:    PACKED_DECIMAL_TYPE,
+		Class:    "numeric",
+		Category: "packed-decimal",
+		Usage:    "PACKED-DECIMAL",
+	},
+	DISPLAY_1_TYPE: {
+		Token:    DISPLAY_1_TYPE,
+		Class:    "alphanumeric",
+		Category: "display",
+		Usage:    "DISPLAY-1",
+	},
 }
 
 // IsDataType returns true if the token represents a data type

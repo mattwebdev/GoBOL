@@ -19,7 +19,7 @@ const (
 	LEVEL_NUMBER // COBOL level number (01-49, 66, 77, 88)
 
 	// Data type tokens
-	BINARY_CHAR
+	BINARY_CHAR Token = iota + 200
 	BINARY_SHORT
 	BINARY_LONG
 	BINARY_DOUBLE
@@ -30,6 +30,9 @@ const (
 	PROCEDURE_POINTER
 	OBJECT
 	REFERENCE
+	NATIONAL_TYPE
+	PACKED_DECIMAL_TYPE
+	DISPLAY_1_TYPE
 
 	// Additional scope terminators
 	END_START
@@ -51,6 +54,15 @@ const (
 	QUEUE
 	RELATIVE_KEY
 	RECORD_KEY
+	// Additional file sharing options
+	SHARING_ALL
+	SHARING_READ
+	SHARING_WRITE
+	SHARING_NONE
+	SHARING_DENY_NONE
+	SHARING_DENY_READ
+	SHARING_DENY_WRITE
+	SHARING_DENY_ALL
 
 	// Report Writer tokens (starting at 900)
 	INITIATE Token = iota + 900
@@ -67,6 +79,59 @@ const (
 	CH
 	CF
 	GROUP_INDICATE
+	// Additional report writer control items
+	REPORT_HEADING
+	PAGE_HEADING
+	CONTROL_HEADING
+	CONTROL_FOOTING
+	DETAIL_LINE
+	PAGE_FOOTING
+	REPORT_FOOTING
+	// Additional report writer group indicators
+	GROUP_INDICATE_1 Token = iota + 950
+	GROUP_INDICATE_2
+	GROUP_INDICATE_3
+	GROUP_INDICATE_4
+	GROUP_INDICATE_5
+	GROUP_INDICATE_6
+	GROUP_INDICATE_7
+	GROUP_INDICATE_8
+	GROUP_INDICATE_9
+
+	// ISO standard special registers (starting at 1100)
+	DEBUG_ITEM Token = iota + 1100
+	DEBUG_LINE
+	DEBUG_NAME
+	DEBUG_SUB_1
+	DEBUG_SUB_2
+	DEBUG_SUB_3
+	DEBUG_CONTENTS
+	DEBUGGING
+
+	// ISO standard class conditions (starting at 1200)
+	CLASS_ALPHABETIC Token = iota + 1200
+	CLASS_ALPHANUMERIC
+	CLASS_NUMERIC
+	CLASS_BOOLEAN
+	CLASS_OBJECT
+	CLASS_REFERENCE
+
+	// ISO standard sign conditions (starting at 1300)
+	SIGN_LEADING Token = iota + 1300
+	SIGN_TRAILING
+	SIGN_SEPARATE
+
+	// ISO standard currency handling (starting at 1400)
+	CURRENCY_SIGN Token = iota + 1400
+	CURRENCY_SYMBOL
+
+	// ISO standard decimal handling (starting at 1500)
+	DECIMAL_POINT_IS_COMMA Token = iota + 1500
+	DECIMAL_POINT_IS_PERIOD
+)
+
+var (
+	tokens = make(map[Token]string)
 )
 
 // tokenStrings maps tokens to their string representations
@@ -78,6 +143,10 @@ var tokenStrings = map[Token]string{
 	STRING_LIT:   "STRING_LIT",
 	NUMBER_LIT:   "NUMBER_LIT",
 	LEVEL_NUMBER: "LEVEL_NUMBER",
+	// Data type tokens
+	NATIONAL_TYPE:       "NATIONAL",
+	PACKED_DECIMAL_TYPE: "PACKED-DECIMAL",
+	DISPLAY_1_TYPE:      "DISPLAY-1",
 	// Verb tokens
 	MOVE:         "MOVE",
 	ADD:          "ADD",
@@ -232,7 +301,6 @@ var tokenStrings = map[Token]string{
 	FINAL:            "FINAL",
 	SUM:              "SUM",
 	RESET:            "RESET",
-	UNDERFLOW:        "UNDERFLOW",
 	REMAINDER:        "REMAINDER",
 	POINTER:          "POINTER",
 	INDEX:            "INDEX",
@@ -265,6 +333,7 @@ var tokenStrings = map[Token]string{
 	SIZE:             "SIZE",
 	ERROR:            "ERROR",
 	OVERFLOW:         "OVERFLOW",
+	UNDERFLOW:        "UNDERFLOW",
 	// Report Writer tokens are now defined in report.go
 
 	// New data type tokens
@@ -301,6 +370,16 @@ var tokenStrings = map[Token]string{
 	RELATIVE_KEY:    "RELATIVE KEY",
 	RECORD_KEY:      "RECORD KEY",
 
+	// Additional file sharing options
+	SHARING_ALL:        "SHARING ALL",
+	SHARING_READ:       "SHARING READ",
+	SHARING_WRITE:      "SHARING WRITE",
+	SHARING_NONE:       "SHARING NONE",
+	SHARING_DENY_NONE:  "SHARING DENY NONE",
+	SHARING_DENY_READ:  "SHARING DENY READ",
+	SHARING_DENY_WRITE: "SHARING DENY WRITE",
+	SHARING_DENY_ALL:   "SHARING DENY ALL",
+
 	// Report Writer tokens (starting at 900)
 	INITIATE:       "INITIATE",
 	TERMINATE:      "TERMINATE",
@@ -316,6 +395,57 @@ var tokenStrings = map[Token]string{
 	CH:             "CH",
 	CF:             "CF",
 	GROUP_INDICATE: "GROUP INDICATE",
+
+	// Additional report writer control items
+	REPORT_HEADING:  "REPORT HEADING",
+	PAGE_HEADING:    "PAGE HEADING",
+	CONTROL_HEADING: "CONTROL HEADING",
+	CONTROL_FOOTING: "CONTROL FOOTING",
+	DETAIL_LINE:     "DETAIL LINE",
+	PAGE_FOOTING:    "PAGE FOOTING",
+	REPORT_FOOTING:  "REPORT FOOTING",
+
+	// Additional report writer group indicators
+	GROUP_INDICATE_1: "GROUP INDICATE 1",
+	GROUP_INDICATE_2: "GROUP INDICATE 2",
+	GROUP_INDICATE_3: "GROUP INDICATE 3",
+	GROUP_INDICATE_4: "GROUP INDICATE 4",
+	GROUP_INDICATE_5: "GROUP INDICATE 5",
+	GROUP_INDICATE_6: "GROUP INDICATE 6",
+	GROUP_INDICATE_7: "GROUP INDICATE 7",
+	GROUP_INDICATE_8: "GROUP INDICATE 8",
+	GROUP_INDICATE_9: "GROUP INDICATE 9",
+
+	// ISO standard special registers
+	DEBUG_ITEM:     "DEBUG-ITEM",
+	DEBUG_LINE:     "DEBUG-LINE",
+	DEBUG_NAME:     "DEBUG-NAME",
+	DEBUG_SUB_1:    "DEBUG-SUB-1",
+	DEBUG_SUB_2:    "DEBUG-SUB-2",
+	DEBUG_SUB_3:    "DEBUG-SUB-3",
+	DEBUG_CONTENTS: "DEBUG-CONTENTS",
+	DEBUGGING:      "DEBUGGING",
+
+	// ISO standard class conditions
+	CLASS_ALPHABETIC:   "CLASS-ALPHABETIC",
+	CLASS_ALPHANUMERIC: "CLASS-ALPHANUMERIC",
+	CLASS_NUMERIC:      "CLASS-NUMERIC",
+	CLASS_BOOLEAN:      "CLASS-BOOLEAN",
+	CLASS_OBJECT:       "CLASS-OBJECT",
+	CLASS_REFERENCE:    "CLASS-REFERENCE",
+
+	// ISO standard sign conditions
+	SIGN_LEADING:  "SIGN-LEADING",
+	SIGN_TRAILING: "SIGN-TRAILING",
+	SIGN_SEPARATE: "SIGN-SEPARATE",
+
+	// ISO standard currency handling
+	CURRENCY_SIGN:   "CURRENCY-SIGN",
+	CURRENCY_SYMBOL: "CURRENCY-SYMBOL",
+
+	// ISO standard decimal handling
+	DECIMAL_POINT_IS_COMMA:  "DECIMAL-POINT-IS-COMMA",
+	DECIMAL_POINT_IS_PERIOD: "DECIMAL-POINT-IS-PERIOD",
 }
 
 // String returns the string representation of a token
@@ -324,4 +454,11 @@ func (t Token) String() string {
 		return str
 	}
 	return "TOKEN(" + strconv.Itoa(int(t)) + ")"
+}
+
+func init() {
+	tokens[NATIONAL_TYPE] = "NATIONAL"
+	tokens[PACKED_DECIMAL_TYPE] = "PACKED-DECIMAL"
+	tokens[DISPLAY_1_TYPE] = "DISPLAY-1"
+	tokens[REPORT_HEADING] = "REPORT HEADING"
 }

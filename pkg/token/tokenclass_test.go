@@ -24,6 +24,11 @@ func TestTokenClassValues(t *testing.T) {
 		{CLASS_SCOPE, 11},
 		{CLASS_CONDITION, 12},
 		{CLASS_FILE, 13},
+		{CLASS_REPORT, 14},
+		{CLASS_REGISTER, 15},
+		{CLASS_CURRENCY, 16},
+		{CLASS_DECIMAL, 17},
+		{CLASS_INDICATOR, 18},
 	}
 
 	for _, tt := range tests {
@@ -53,8 +58,13 @@ func TestIsValidClass(t *testing.T) {
 		{"CLASS_SCOPE is valid", CLASS_SCOPE, true},
 		{"CLASS_CONDITION is valid", CLASS_CONDITION, true},
 		{"CLASS_FILE is valid", CLASS_FILE, true},
+		{"CLASS_REPORT is valid", CLASS_REPORT, true},
+		{"CLASS_REGISTER is valid", CLASS_REGISTER, true},
+		{"CLASS_CURRENCY is valid", CLASS_CURRENCY, true},
+		{"CLASS_DECIMAL is valid", CLASS_DECIMAL, true},
+		{"CLASS_INDICATOR is valid", CLASS_INDICATOR, true},
 		{"Negative value is invalid", TokenClass(-1), false},
-		{"Value too large is invalid", TokenClass(14), false},
+		{"Value too large is invalid", TokenClass(19), false},
 	}
 
 	for _, tt := range tests {
@@ -86,6 +96,11 @@ func TestTokenClass_String(t *testing.T) {
 		{"CLASS_SCOPE string", CLASS_SCOPE, "SCOPE"},
 		{"CLASS_CONDITION string", CLASS_CONDITION, "CONDITION"},
 		{"CLASS_FILE string", CLASS_FILE, "FILE"},
+		{"CLASS_REPORT string", CLASS_REPORT, "REPORT"},
+		{"CLASS_REGISTER string", CLASS_REGISTER, "REGISTER"},
+		{"CLASS_CURRENCY string", CLASS_CURRENCY, "CURRENCY"},
+		{"CLASS_DECIMAL string", CLASS_DECIMAL, "DECIMAL"},
+		{"CLASS_INDICATOR string", CLASS_INDICATOR, "INDICATOR"},
 		{"Invalid class string", TokenClass(99), "INVALID"},
 	}
 

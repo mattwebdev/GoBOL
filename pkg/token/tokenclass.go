@@ -21,11 +21,16 @@ const (
 	CLASS_SCOPE     // Scope terminators (END-IF, etc)
 	CLASS_CONDITION // Condition keywords (ON, NOT, etc)
 	CLASS_FILE      // File-related keywords
+	CLASS_REPORT    // Report writer keywords
+	CLASS_REGISTER  // Special registers
+	CLASS_CURRENCY  // Currency handling
+	CLASS_DECIMAL   // Decimal point handling
+	CLASS_INDICATOR // Group indicators
 )
 
 // IsValidClass checks if a TokenClass value is valid
 func IsValidClass(class TokenClass) bool {
-	return class >= CLASS_UNKNOWN && class <= CLASS_FILE
+	return class >= CLASS_UNKNOWN && class <= CLASS_INDICATOR
 }
 
 // String returns the string representation of a TokenClass
@@ -59,6 +64,16 @@ func (c TokenClass) String() string {
 		return "CONDITION"
 	case CLASS_FILE:
 		return "FILE"
+	case CLASS_REPORT:
+		return "REPORT"
+	case CLASS_REGISTER:
+		return "REGISTER"
+	case CLASS_CURRENCY:
+		return "CURRENCY"
+	case CLASS_DECIMAL:
+		return "DECIMAL"
+	case CLASS_INDICATOR:
+		return "INDICATOR"
 	default:
 		return "INVALID"
 	}
