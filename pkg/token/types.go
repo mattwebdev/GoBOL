@@ -128,6 +128,40 @@ const (
 	// ISO standard decimal handling (starting at 1500)
 	DECIMAL_POINT_IS_COMMA Token = iota + 1500
 	DECIMAL_POINT_IS_PERIOD
+
+	// Communication tokens
+	COMMUNICATION_SECTION
+	CD
+	SYMBOLIC_QUEUE
+	SYMBOLIC_SUB_QUEUE
+	MESSAGE_COUNT
+	MESSAGE_DATE
+	MESSAGE_TIME
+	TEXT_LENGTH
+	END_KEY
+	STATUS_KEY
+
+	// Screen tokens (excluding SCREEN_SECTION which is already defined)
+	BLANK_SCREEN
+	BLANK_LINE
+	BELL
+	BLINK
+	HIGHLIGHT
+	LOWLIGHT
+	REVERSE_VIDEO
+	UNDERLINE
+	PROMPT
+	SECURE
+	AUTO
+	FULL
+	REQUIRED
+
+	// Table handling tokens (excluding OCCURS which is already defined)
+	DEPENDING_ON
+	ASCENDING
+	DESCENDING
+	INDEXED_BY
+	KEY_IS
 )
 
 var (
