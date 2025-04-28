@@ -8,10 +8,11 @@ Yes, you read that right. I'm building a COBOL compiler. In Go. In 2025. Why? Be
 
 ## 📚 Documentation
 
-- [Command Line Interface](cmd/cmd.md) - How to boss around the compiler
-- [Token System](pkg/token/token.md) - The Rosetta Stone of our COBOL understanding
-- [Error Handling](pkg/errors/errors.md) - When things go wrong (and they will)
-- [Testing Strategy](tests/tests.md) - Proving it works (with science!)
+- [Command Line Interface](cmd/README.md) - How to boss around the compiler
+- [Internal Packages](internal/README.md) - Where COBOL goes to be transformed (like a digital spa day)
+- [Token System](pkg/token/README.md) - The Rosetta Stone of our COBOL understanding
+- [Error Handling](pkg/errors/README.md) - When things go wrong (and they will)
+- [Testing Strategy](tests/README.md) - Proving it works (with science!)
 
 ## 🤔 What's This All About?
 
