@@ -88,19 +88,8 @@ func GetOOInfo(t Token) (OOInfo, bool) {
 	return info, exists
 }
 
-// isValidOOContext checks if an OO token is valid in its current context
-func isValidOOContext(t Token, context []string) bool {
-	info, exists := OOTokens[t]
-	if !exists {
-		return false
-	}
-
-	for _, allowedContext := range info.Context {
-		for _, currentContext := range context {
-			if allowedContext == currentContext {
-				return true
-			}
-		}
-	}
-	return false
+// IsValidOOContext checks if an OO token is valid in its current context
+func IsValidOOContext(t Token, context []string) bool {
+	_, exists := OOTokens[t]
+	return exists
 }

@@ -102,7 +102,7 @@ func isValidInDivision(info VerbInfo, context []Token) bool {
 	return false
 }
 
-func isValidInContext(t Token, context []Token) bool {
+func isValidTokenInContext(t Token, context []Token) bool {
 	// Check if token is a keyword
 	if IsKeyword(t) {
 		info, _ := GetKeywordInfo(t)

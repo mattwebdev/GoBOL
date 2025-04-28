@@ -124,3 +124,22 @@ func TestValidateTokenGroup(t *testing.T) {
 		})
 	}
 }
+
+func TestIsValidTokenInContext(t *testing.T) {
+	tests := []struct {
+		token    Token
+		context  []Token
+		expected bool
+	}{
+		{PICTURE, []Token{DATA_DIVISION}, true},
+		{PICTURE, []Token{PROCEDURE_DIVISION}, false},
+		{ILLEGAL, []Token{DATA_DIVISION}, true},
+	}
+
+	for _, test := range tests {
+		result := isValidTokenInContext(test.token, test.context)
+		if result != test.expected {
+			t.Errorf("isValidTokenInContext(%v, %v) = %v, want %v", test.token, test.context, result, test.expected)
+		}
+	}
+}
